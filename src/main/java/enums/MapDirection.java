@@ -17,14 +17,14 @@ public enum MapDirection {
 	{
 		switch(this)
 		{
-			case NORTH: return "⭡";
-			case NORTH_EAST: return "⭧";
-			case EAST: return "⭢";
-			case SOUTH_EAST: return "⭨";
-			case SOUTH: return "⭣";
-			case SOUTH_WEST: return "⭩";
-			case WEST: return "⭠";	
-			case NORTH_WEST: return "⭦";
+			case NORTH: return "N";
+			case NORTH_EAST: return "NE";
+			case EAST: return "E";
+			case SOUTH_EAST: return "SE";
+			case SOUTH: return "S";
+			case SOUTH_WEST: return "SW";
+			case WEST: return "W";	
+			case NORTH_WEST: return "NW";
 			default: return "No such direction";
 		}			
 	}
