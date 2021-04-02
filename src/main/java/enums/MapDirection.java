@@ -1,5 +1,7 @@
 package enums;
 
+import java.util.Random;
+
 import map.Vector2d;
 
 public enum MapDirection {
@@ -29,10 +31,10 @@ public enum MapDirection {
 		}			
 	}
 	
-	public MapDirection changeOrientation(int direction)
+	public MapDirection changeOrientation(int rotation)
 	{
 		int index = this.ordinal();
-		return MapDirection.values()[(index+direction) % 8];
+		return MapDirection.values()[(index+rotation) % 8];
 	}
 	
 	public MapDirection next()
@@ -61,5 +63,10 @@ public enum MapDirection {
 			case NORTH_WEST: return new Vector2d(-1,1);
 			default: return null;
 		}		
+	}
+	
+	public static MapDirection randomOrientation()
+	{
+		return MapDirection.values()[new Random().nextInt(8)];
 	}
 }

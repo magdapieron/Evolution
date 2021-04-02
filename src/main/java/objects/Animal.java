@@ -1,17 +1,21 @@
 package objects;
 
+import java.util.LinkedList;
+import java.util.List;
+import interfaces.IPositionChangeObserver;
 import enums.MapDirection;
-import interfaces.IMapInteraction;
+import interfaces.IMapElement;
 import map.Vector2d;
 import map.Map;
 
-public class Animal implements IMapInteraction{
+public class Animal implements IMapElement{
 
 	private Genotype genotype;
 	private Vector2d position;
 	private int energy;
 	private Map map;
 	private MapDirection orientation;
+	private List<IPositionChangeObserver> observers = new LinkedList();
 	
 	public Animal(Genotype genotype, Vector2d initialPosition, MapDirection initialOrientation, int energy, Map map )
 	{
@@ -43,33 +47,66 @@ public class Animal implements IMapInteraction{
 		return orientation.toString();
 	}
 	
-	public void move(int direction)		// losowanie pozycji na podstawie genotypu, na pozniej
+	// draw of rotation based on genotype 
+	public void move()		
 	{	
-		orientation.changeOrientation(direction);
+		int rotation = this.genotype.drawGen();
+		this.orientation = orientation.changeOrientation(rotation);
+		
+		Vector2d oldPosition = position;
+		Vector2d newPosition = position.add(orientation.toUnitVector());
+		int newX = newPosition.x;
+		int newY = newPosition.y;
+		
+		if(newX > map.getWidth())
+		{
+			newX = newX - map.getWidth();
+		}
+		else if(newX == -1)
+		{
+			newX = newX + map.getWidth();
+		}
+		
+		if(newY > map.getHeight())
+		{
+			newY = newY - map.getHeight();
+		}
+		else if(newY == -1)
+		{
+			newX = newY + map.getHeight();
+		}
+		
+		this.position = new Vector2d(newX, newY);
+		newPosition = this.position;
+		
+		positionChanged(oldPosition, newPosition);
+	}
+	
+	int randomRotation()
+	{
+		return MapDirection.randomOrientation().ordinal(); 		
 	}
 	
 	public Animal reproduction(Animal other)
 	{		
 		return null;		
 	}
-
-	public boolean canMoveTo(Vector2d position) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean placeAnimal(Animal animal) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isOccupied(Vector2d position) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public Object objectAt(Vector2d position) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	public void addObserver(IPositionChangeObserver observer)
+	 {
+		 observers.add(observer);
+	 }
+	 
+	public void removeObserver(IPositionChangeObserver observer)
+	 {
+		 observers.remove(observer);
+	 }
+	 
+	public void positionChanged(Vector2d oldPosition, Vector2d newPosition)
+	 {
+		 for(IPositionChangeObserver obs : observers)
+		 {
+			 obs.positionChanged(oldPosition, newPosition);
+		 }
+	 }
 }

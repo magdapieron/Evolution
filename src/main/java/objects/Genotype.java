@@ -46,7 +46,7 @@ public class Genotype {
 		Collections.sort(genotype);
 	}
 	
-	List<Boolean> findMissing(List<Integer> genotype)
+	private List<Boolean> findMissing(List<Integer> genotype)
 	{
 		List<Boolean> missing = new ArrayList<Boolean>();
 		
@@ -77,10 +77,10 @@ public class Genotype {
 			index2 = tmp;
 		}
 		
-		List<Boolean> parents = null;
+		List<Boolean> parents = new ArrayList<Boolean>();
 		int i=0;
 		
-		while(i != 2)										// 3 groups of genes, true if from this, false if from other
+		while(i < 3)										// 3 groups of genes, true if from this, false if from other
 		{													
 			parents.add(i, new Random().nextBoolean());
 			i++;
@@ -93,9 +93,8 @@ public class Genotype {
 		else if(!parents.contains(true))
 		{
 			parents.add(new Random().nextInt(3), true);
-		}															// now we are sure, that there's child will recive genes after
+		}															// now we are sure, that there's child will receive genes after
 																	// both parents
-		
 		for(int j=0; j<3; j++)
 		{
 			Genotype parentGenotype = null;
@@ -103,6 +102,7 @@ public class Genotype {
 				 parentGenotype = this;
 			else
 				parentGenotype = other;
+			System.out.println(parentGenotype);
 			
 			switch(j)
 			{
@@ -119,7 +119,7 @@ public class Genotype {
 		return new Genotype(childGenotype);
 	}
 	
-	List<Integer> donateGenes(int start, int end, Genotype parentGenotype)
+	private List<Integer> donateGenes(int start, int end, Genotype parentGenotype)
 	{
 		List<Integer> genes = new ArrayList<Integer>();
 		while(start <= end)
@@ -130,7 +130,16 @@ public class Genotype {
 		return genes;		
 	}
 	
+	public int drawGen()
+	{
+		int gen = this.genotype.get(new Random().nextInt(32));			// is that what the command is about?
+		return gen;
+	}
 	
+	public List<Integer> getGenotype() {
+		return genotype;
+	}
+
 	@Override
 	public String toString() {
 		return "Genotype: " + genotype;

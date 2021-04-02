@@ -27,7 +27,7 @@ public class Vector2d {
 		return (this.x >= other.x && this.y >= other.y);
 	}
 	
-	Vector2d upperRight(Vector2d other)
+	public Vector2d upperRight(Vector2d other)
 	{
 		int x1;
 		int y1;
@@ -44,7 +44,7 @@ public class Vector2d {
 		return new Vector2d(x1,y1);
 	}
 	
-	Vector2d lowerLeft(Vector2d other)
+	public Vector2d lowerLeft(Vector2d other)
 	{
 		int x1;
 		int y1;
@@ -61,17 +61,17 @@ public class Vector2d {
 		return new Vector2d(x1,y1);
 	}
 	
-	Vector2d add(Vector2d other)
+	public Vector2d add(Vector2d other)
 	{
 		return new Vector2d(this.x+other.x, this.y+other.y);
 	}
 	
-	Vector2d subtract(Vector2d other)
+	public Vector2d subtract(Vector2d other)
 	{
 		return new Vector2d(this.x-other.x, this.y-other.y);
 	}
 	
-	Vector2d opposite()
+	public Vector2d opposite()
 	{	 
 		return new Vector2d(this.x*(-1), this.y*(-1));
 	}

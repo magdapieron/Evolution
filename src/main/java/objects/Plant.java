@@ -1,8 +1,9 @@
 package objects;
 
+import interfaces.IMapElement;
 import map.Vector2d;
 
-public class Plant {
+public class Plant implements IMapElement{
 
 	private Vector2d position;
 	
