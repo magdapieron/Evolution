@@ -50,7 +50,7 @@ public class Animal implements IMapElement{
 	// draw of rotation based on genotype 
 	public void move()		
 	{	
-		int rotation = this.genotype.drawGen();
+		int rotation = this.genotype.drawGene();
 		this.orientation = orientation.changeOrientation(rotation);
 		
 		Vector2d oldPosition = position;
@@ -77,9 +77,8 @@ public class Animal implements IMapElement{
 		}
 		
 		this.position = new Vector2d(newX, newY);
-		newPosition = this.position;
 		
-		positionChanged(oldPosition, newPosition);
+		positionChanged(oldPosition, position);
 	}
 	
 	int randomRotation()

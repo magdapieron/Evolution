@@ -34,19 +34,19 @@ public class Genotype {
 	
 	private void constainsAll(List<Integer> genotype)
 	{			
-		List<Boolean> missing = findMissing(genotype);
-		int missingGen = 0;
+		List<Boolean> missing = findMissing();
+		int missingGene = 0;
 		
 		while(missing.contains(false))
 		{
-			missingGen = missing.indexOf(false);
-			genotype.add(new Random().nextInt(32), missingGen);
-			missing = findMissing(genotype);
+			missingGene = missing.indexOf(false);
+			genotype.add(new Random().nextInt(32), missingGene);
+			missing = findMissing();
 		} 
 		Collections.sort(genotype);
 	}
 	
-	private List<Boolean> findMissing(List<Integer> genotype)
+	private List<Boolean> findMissing()		
 	{
 		List<Boolean> missing = new ArrayList<Boolean>();
 		
@@ -64,11 +64,11 @@ public class Genotype {
 	{
 		List<Integer> childGenotype = new ArrayList<Integer>();
 		
-		int index1 = new Random().nextInt(32);
+		int index1 = new Random().nextInt(32);				// must be divided into 3 groups
 		int index2 = new Random().nextInt(32);
 		
-		while(index1 == index2)
-			index2 = new Random().nextInt(32);				// must be divided into 3 groups
+		while(index1 == index2)						
+			index2 = new Random().nextInt(32);				
 		
 		if(index1 > index2)
 		{
@@ -80,7 +80,7 @@ public class Genotype {
 		List<Boolean> parents = new ArrayList<Boolean>();
 		int i=0;
 		
-		while(i < 3)										// 3 groups of genes, true if from this, false if from other
+		while(i < 3)									// 3 groups of genes, true if from this, false if from other
 		{													
 			parents.add(i, new Random().nextBoolean());
 			i++;
@@ -93,8 +93,8 @@ public class Genotype {
 		else if(!parents.contains(true))
 		{
 			parents.add(new Random().nextInt(3), true);
-		}															// now we are sure, that there's child will receive genes after
-																	// both parents
+		}													// now we are sure, that child will receive genes after both parents
+																	
 		for(int j=0; j<3; j++)
 		{
 			Genotype parentGenotype = null;
@@ -130,10 +130,10 @@ public class Genotype {
 		return genes;		
 	}
 	
-	public int drawGen()
+	public int drawGene()
 	{
-		int gen = this.genotype.get(new Random().nextInt(32));			// is that what the command is about?
-		return gen;
+		int gene = this.genotype.get(new Random().nextInt(32));			// is that what the command is about?
+		return gene;
 	}
 	
 	public List<Integer> getGenotype() {
