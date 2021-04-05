@@ -65,6 +65,7 @@ public enum MapDirection {
 		}		
 	}
 	
+	// draws initial orientation for the first animals or children 
 	public static MapDirection randomOrientation()
 	{
 		return MapDirection.values()[new Random().nextInt(8)];

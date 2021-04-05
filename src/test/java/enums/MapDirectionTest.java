@@ -32,4 +32,13 @@ public class MapDirectionTest {
 		assertTrue(direction.toUnitVector().x >= -1 && direction.toUnitVector().x <= 1);
 		assertTrue(direction.toUnitVector().y >= -1 && direction.toUnitVector().y <= 1);
 	}
+	
+	@Test
+	public void changeOrientationTest()
+	{
+		MapDirection orientation = MapDirection.NORTH;
+		assertEquals(MapDirection.NORTH ,orientation.changeOrientation(0));
+		assertEquals(MapDirection.SOUTH ,orientation.changeOrientation(4));
+		assertEquals(MapDirection.NORTH ,orientation.changeOrientation(8));
+	}
 }

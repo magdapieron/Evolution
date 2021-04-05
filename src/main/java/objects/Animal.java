@@ -6,24 +6,31 @@ import interfaces.IPositionChangeObserver;
 import enums.MapDirection;
 import interfaces.IMapElement;
 import map.Vector2d;
-import map.Map;
+import map.WorldMap;
 
 public class Animal implements IMapElement{
 
 	private Genotype genotype;
 	private Vector2d position;
 	private int energy;
-	private Map map;
+	private WorldMap map;
 	private MapDirection orientation;
 	private List<IPositionChangeObserver> observers = new LinkedList();
+	private int children;
+	private int birthEpoch;
+	private int deathEpoch;
+	// private int descendants; ?
 	
-	public Animal(Genotype genotype, Vector2d initialPosition, MapDirection initialOrientation, int energy, Map map )
+	public Animal(Genotype genotype, Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
 	{
 		this.genotype = genotype;
 		this.position = initialPosition;
 		this.orientation = initialOrientation;
 		this.energy = energy;
 		this.map = map;
+		this.children = 0;
+		this.birthEpoch = birthEpoch;
+		this.deathEpoch = -1;
 	}
 
 	public Vector2d getPosition() {
@@ -81,14 +88,35 @@ public class Animal implements IMapElement{
 		positionChanged(oldPosition, position);
 	}
 	
-	int randomRotation()
-	{
-		return MapDirection.randomOrientation().ordinal(); 		
-	}
-	
 	public Animal reproduction(Animal other)
 	{		
-		return null;		
+		Vector2d childPosition = map.randomPositionForChild(this.position);
+		MapDirection childOrientation = MapDirection.randomOrientation();
+		int childEnergy = this.energy*(1/4) + other.energy*(1/4);
+		Genotype childGenotype = this.genotype.createGenotype(other.getGenotype());
+		
+		this.energy =- this.energy*(1/4);
+		other.energy =- other.energy*(1/4);
+		
+		this.newChild();
+		other.newChild();
+		
+		return new Animal(childGenotype, childPosition, childOrientation, childEnergy, this.map, this.birthEpoch);		
+	}
+	
+	public void eatPlant(int plantEnergy)
+	{
+		this.energy += plantEnergy;
+	}
+	
+	public int getLifeExpectancy()
+	{
+		return deathEpoch-birthEpoch;
+	}
+	
+	public void newChild()
+	{
+		this.children++;
 	}
 	
 	public void addObserver(IPositionChangeObserver observer)

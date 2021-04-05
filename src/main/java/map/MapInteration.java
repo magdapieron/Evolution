@@ -31,19 +31,7 @@ public abstract class MapInteration implements IPositionChangeObserver{
 	{
 		return animals.containsKey(position);
 	}
-
 	
 	//  Return an object at given position
-	Object objectAt(Vector2d position)
-	{
-		if(isOccupied(position))
-		{
-			if(animals.get(position) != null)
-			{
-				Object obj = animals.get(position);
-				return obj;
-			}
-		}
-		return null;
-	}
+	public abstract Object objectAt(Vector2d position);
 }
