@@ -15,15 +15,15 @@ public class Animal implements IMapElement{
 	private int energy;
 	private WorldMap map;
 	private MapDirection orientation;
-	private List<IPositionChangeObserver> observers = new LinkedList();
+	private List<IPositionChangeObserver> observers = new LinkedList<>();
 	private int children;
 	private int birthEpoch;
 	private int deathEpoch;
 	// private int descendants; ?
 	
-	public Animal(Genotype genotype, Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
+	// initial animal with random genes
+	public Animal(Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
 	{
-		this.genotype = genotype;
 		this.position = initialPosition;
 		this.orientation = initialOrientation;
 		this.energy = energy;
@@ -31,8 +31,16 @@ public class Animal implements IMapElement{
 		this.children = 0;
 		this.birthEpoch = birthEpoch;
 		this.deathEpoch = -1;
+		this.genotype = new Genotype();
 	}
 
+	// born animal
+	public Animal(Genotype genotype, Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
+	{
+		this(initialPosition, initialOrientation, energy, map, birthEpoch);
+		this.genotype = genotype;
+	}
+	
 	public Vector2d getPosition() {
 		return position;
 	}
@@ -92,11 +100,11 @@ public class Animal implements IMapElement{
 	{		
 		Vector2d childPosition = map.randomPositionForChild(this.position);
 		MapDirection childOrientation = MapDirection.randomOrientation();
-		int childEnergy = this.energy*(1/4) + other.energy*(1/4);
+		int childEnergy = this.energy/4 + other.getEnergy()/4;
 		Genotype childGenotype = this.genotype.createGenotype(other.getGenotype());
 		
-		this.energy =- this.energy*(1/4);
-		other.energy =- other.energy*(1/4);
+		this.energy -= this.energy*(1/4);
+		other.energy -= other.energy*(1/4);
 		
 		this.newChild();
 		other.newChild();

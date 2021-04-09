@@ -9,9 +9,9 @@ import objects.Animal;
  * contains methods for animals, than can be overridden also for plants in Map
  */
 
-public abstract class MapInteration implements IPositionChangeObserver{
+public abstract class MapIntegration implements IPositionChangeObserver{
 	
-	protected Map<Vector2d, Animal> animals = new LinkedHashMap();
+	protected Map<Vector2d, Animal> animals = new LinkedHashMap<>();
 	
 	
 	// Place animal on the map
@@ -20,8 +20,7 @@ public abstract class MapInteration implements IPositionChangeObserver{
 		if(isOccupied(animal.getPosition()))
 			throw new IllegalArgumentException(animal.getPosition() + "is occupied");
 		animals.put(animal.getPosition(), animal);
-		animal.addObserver(this);						// register the map as an observer
-					
+		animal.addObserver(this);						// register the map as an observer			
 		return true;	
 	}
    

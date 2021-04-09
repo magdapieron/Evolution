@@ -25,7 +25,10 @@ public class Vector2d {
 		return new Vector2d(this.x+other.x, this.y+other.y);
 	}
 	
-	// maybe method that returns positions around parents? 
+	Vector2d subtract(Vector2d other)
+	{
+		return new Vector2d(this.x-other.x, this.y-other.y);
+	}
 	
 	public boolean equals(Object other)
 	{
@@ -34,9 +37,7 @@ public class Vector2d {
 		if (!(other instanceof Vector2d))
 		    return false;
 		Vector2d that = (Vector2d) other;
-		if(this.x == that.x && this.y == that.y)	
-			return true;
-		return false; 
+		return (this.x == that.x && this.y == that.y);	
 	}
 	
 	@Override

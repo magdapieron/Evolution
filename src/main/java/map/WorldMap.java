@@ -8,19 +8,38 @@ import java.util.Random;
 import enums.MapDirection;
 import objects.Plant;
 
-public class WorldMap extends MapInteration {
+public class WorldMap extends MapIntegration {
 	
 	private int width;
 	private int height;
-	private Map<Vector2d, Plant> steppes;
+	private Map<Vector2d, Plant> plants;
+	private Random random = new Random();
+	private double jungleRatio;
+	private Vector2d mapCenter;
 	
-	public WorldMap(int width, int height)
+	public WorldMap(int width, int height, double jungleRatio)
 	{
 		this.width = width;
 		this.height = height;
-		this.steppes = new LinkedHashMap<Vector2d, Plant>();
+		this.plants = new LinkedHashMap<>();
+		this.jungleRatio = jungleRatio;
+		this.mapCenter = new Vector2d((int) Math.round(width/2), (int) Math.round(height/2));
 	}
-
+	
+	public Vector2d jungleLowerLeftCorner()
+	{		
+		int jungleWidth = (int) Math.round(width*jungleRatio);
+		int jungleHeight = (int) Math.round(height*jungleRatio);
+		return new Vector2d((int)Math.round(mapCenter.x - jungleWidth) , (int)Math.round(mapCenter.y - jungleHeight));
+	}
+	
+	public Vector2d jungleUpperRightCorner()
+	{		
+		int jungleWidth = (int) Math.round(width*jungleRatio);
+		int jungleHeight = (int) Math.round(height*jungleRatio);
+		return mapCenter.add(new Vector2d(jungleWidth, jungleHeight));
+	}
+	
 	public int getWidth() {
 		return width;
 	}
@@ -32,7 +51,7 @@ public class WorldMap extends MapInteration {
 	public Vector2d randomPositionForChild(Vector2d parentPosition)
 	{
 		Vector2d childPosition = null;
-		List<Integer> freePositions = new ArrayList<Integer>();
+		List<Integer> freePositions = new ArrayList<>();
 		
 		for(int i=0; i<8; i++)
 		{
@@ -41,15 +60,15 @@ public class WorldMap extends MapInteration {
 		}
 		
 		// if there are free positions, draw of one of them
-		if(freePositions.size() != 0)
+		if(!freePositions.isEmpty())
 		{
-			int direction = freePositions.get(new Random().nextInt(freePositions.size()));
+			int direction = freePositions.get(random.nextInt(freePositions.size()));
 			childPosition = parentPosition.add(MapDirection.values()[direction].toUnitVector());
 		}
 		// if there is not free position, draw of occupied one
 		else
 		{
-			int direction = freePositions.get(new Random().nextInt(8));
+			int direction = random.nextInt(8);
 			childPosition = parentPosition.add(MapDirection.values()[direction].toUnitVector());
 		}
 		return childPosition;
@@ -61,19 +80,12 @@ public class WorldMap extends MapInteration {
 		{
 			if(animals.get(position) != null)
 			{
-				Object obj = animals.get(position);
-				return obj;
+				return animals.get(position);
 			}
-			if(steppes.get(position) != null)
+			if(plants.get(position) != null)
 			{
-				Object obj = steppes.get(position);
-				return obj;
+				return plants.get(position);
 			}				
-			if(animals.get(position) != null)
-			{
-				Object obj = animals.get(position);
-				return obj;
-			}
 		}			
 		return null;
 	}
@@ -84,7 +96,17 @@ public class WorldMap extends MapInteration {
 		if(super.isOccupied(position))
 			return true;
 
-		return (steppes.containsKey(position));
+		return (plants.containsKey(position));
+	}
+	
+	public void removePlant(Plant plant)
+	{
+		plants.remove(plant.getPosition());
+	}
+	
+	public void setPlant(Plant plant)
+	{
+		plants.put(plant.getPosition(), plant);
 	}
 	
 	public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {

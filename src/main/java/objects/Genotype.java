@@ -8,10 +8,11 @@ import java.util.Random;
 public class Genotype {
 
 	private final List<Integer> genotype;
+	private Random random = new Random();
 	
 	public Genotype()
 	{
-		this.genotype = new ArrayList<Integer>();
+		this.genotype = new ArrayList<>();
 		generateGenotype();	
 	}
 	
@@ -26,13 +27,13 @@ public class Genotype {
 	{
 		for(int i=0; i<32; i++)
 		{
-			genotype.add(i, new Random().nextInt(8));
+			genotype.add(i, random.nextInt(8));
 		}
 
-		constainsAll(genotype);
+		completeGenotype(genotype);
 	}
 	
-	private void constainsAll(List<Integer> genotype)
+	private void completeGenotype(List<Integer> genotype)
 	{			
 		List<Boolean> missing = findMissing();
 		int missingGene = 0;
@@ -40,7 +41,7 @@ public class Genotype {
 		while(missing.contains(false))
 		{
 			missingGene = missing.indexOf(false);
-			genotype.add(new Random().nextInt(32), missingGene);
+			genotype.add(random.nextInt(32), missingGene);
 			missing = findMissing();
 		} 
 		Collections.sort(genotype);
@@ -48,7 +49,7 @@ public class Genotype {
 	
 	private List<Boolean> findMissing()		
 	{
-		List<Boolean> missing = new ArrayList<Boolean>();
+		List<Boolean> missing = new ArrayList<>();
 		
 		for(int i=0; i<8; i++)					
 		{
@@ -62,13 +63,13 @@ public class Genotype {
 	
 	public Genotype createGenotype( Genotype other)
 	{
-		List<Integer> childGenotype = new ArrayList<Integer>();
+		List<Integer> childGenotype = new ArrayList<>();
 		
-		int index1 = new Random().nextInt(32);				// must be divided into 3 groups
-		int index2 = new Random().nextInt(32);
+		int index1 = random.nextInt(32);				// must be divided into 3 groups
+		int index2 = random.nextInt(32);
 		
 		while(index1 == index2)						
-			index2 = new Random().nextInt(32);				
+			index2 = random.nextInt(32);				
 		
 		if(index1 > index2)
 		{
@@ -77,24 +78,8 @@ public class Genotype {
 			index2 = tmp;
 		}
 		
-		List<Boolean> parents = new ArrayList<Boolean>();
-		int i=0;
+		List<Boolean> parents = drawOfGroups();		
 		
-		while(i < 3)									// 3 groups of genes, true if from this, false if from other
-		{													
-			parents.add(i, new Random().nextBoolean());
-			i++;
-		}
-		
-		if(!parents.contains(false))								// maybe can do this better?
-		{															
-			parents.add(new Random().nextInt(3), false);
-		}
-		else if(!parents.contains(true))
-		{
-			parents.add(new Random().nextInt(3), true);
-		}													// now we are sure, that child will receive genes after both parents
-																	
 		for(int j=0; j<3; j++)
 		{
 			Genotype parentGenotype = null;
@@ -102,7 +87,6 @@ public class Genotype {
 				 parentGenotype = this;
 			else
 				parentGenotype = other;
-			System.out.println(parentGenotype);
 			
 			switch(j)
 			{
@@ -115,13 +99,35 @@ public class Genotype {
 			}
 		}				
 		Collections.sort(childGenotype);
-		constainsAll(childGenotype);
+		completeGenotype(childGenotype);
 		return new Genotype(childGenotype);
+	}
+	
+	private List<Boolean> drawOfGroups()
+	{
+		List<Boolean> parents = new ArrayList<>();
+		int i=0;
+		
+		while(i < 3)						// 3 groups of genes, true if from this, false if from other
+		{													
+			parents.add(i, random.nextBoolean());
+			i++;
+		}
+		
+		if(!parents.contains(false))	
+		{															
+			parents.add(random.nextInt(3), false);
+		}
+		else if(!parents.contains(true))
+		{
+			parents.add(random.nextInt(3), true);
+		}											
+		return parents;					// now we are sure, that child will receive genes after both parents
 	}
 	
 	private List<Integer> donateGenes(int start, int end, Genotype parentGenotype)
 	{
-		List<Integer> genes = new ArrayList<Integer>();
+		List<Integer> genes = new ArrayList<>();
 		while(start <= end)
 		{
 			genes.add(parentGenotype.genotype.get(start));
@@ -132,7 +138,7 @@ public class Genotype {
 	
 	public int drawGene()
 	{
-		int gene = this.genotype.get(new Random().nextInt(32));			// is that what the command is about?
+		int gene = this.genotype.get(random.nextInt(32));
 		return gene;
 	}
 	
