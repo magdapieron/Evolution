@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import interfaces.IPositionChangeObserver;
 import enums.MapDirection;
+import interfaces.IEnergyChangeObserver;
 import interfaces.IMapElement;
 import map.Vector2d;
 import map.WorldMap;
@@ -15,7 +16,8 @@ public class Animal implements IMapElement{
 	private int energy;
 	private WorldMap map;
 	private MapDirection orientation;
-	private List<IPositionChangeObserver> observers = new LinkedList<>();
+	private List<IPositionChangeObserver> positionObserver = new LinkedList<>();
+	private List<IEnergyChangeObserver> energyObserver = new LinkedList<>();
 	private int children;
 	private int birthEpoch;
 	private int deathEpoch;
@@ -39,27 +41,6 @@ public class Animal implements IMapElement{
 	{
 		this(initialPosition, initialOrientation, energy, map, birthEpoch);
 		this.genotype = genotype;
-	}
-	
-	public Vector2d getPosition() {
-		return position;
-	}
-
-	public int getEnergy() {
-		return energy;
-	}
-	
-	public MapDirection getOrientation() {
-		return orientation;
-	}
-
-	public Genotype getGenotype() {
-		return genotype;
-	}
-
-	@Override
-	public String toString() {
-		return orientation.toString();
 	}
 	
 	// draw of rotation based on genotype 
@@ -94,6 +75,9 @@ public class Animal implements IMapElement{
 		this.position = new Vector2d(newX, newY);
 		
 		positionChanged(oldPosition, position);
+		
+		this.energy -= 1;
+		this.energyChanged();
 	}
 	
 	public Animal reproduction(Animal other)
@@ -104,7 +88,9 @@ public class Animal implements IMapElement{
 		Genotype childGenotype = this.genotype.createGenotype(other.getGenotype());
 		
 		this.energy -= this.energy*(1/4);
+		this.energyChanged();
 		other.energy -= other.energy*(1/4);
+		other.energyChanged();
 		
 		this.newChild();
 		other.newChild();
@@ -117,31 +103,74 @@ public class Animal implements IMapElement{
 		this.energy += plantEnergy;
 	}
 	
-	public int getLifeExpectancy()
-	{
-		return deathEpoch-birthEpoch;
-	}
-	
 	public void newChild()
 	{
 		this.children++;
 	}
 	
-	public void addObserver(IPositionChangeObserver observer)
+	public void addPositionObserver(IPositionChangeObserver observer)
 	 {
-		 observers.add(observer);
+		positionObserver.add(observer);
 	 }
 	 
-	public void removeObserver(IPositionChangeObserver observer)
+	public void removePositionObserver(IPositionChangeObserver observer)
 	 {
-		 observers.remove(observer);
+		positionObserver.remove(observer);
 	 }
 	 
 	public void positionChanged(Vector2d oldPosition, Vector2d newPosition)
 	 {
-		 for(IPositionChangeObserver obs : observers)
+		 for(IPositionChangeObserver obs : positionObserver)
 		 {
-			 obs.positionChanged(oldPosition, newPosition);
+			 obs.positionChanged(oldPosition, newPosition, this);
 		 }
 	 }
+	
+	public void addEnergyObserver(IEnergyChangeObserver observer)
+	 {
+		energyObserver.add(observer);
+	 }
+	 
+	public void removeEnergyObserver(IEnergyChangeObserver observer)
+	 {
+		energyObserver.remove(observer);
+	 }
+	 
+	public void energyChanged()
+	 {
+		 for(IEnergyChangeObserver obs : energyObserver)
+		 {
+			 obs.energyChanged(this);
+		 }
+	 }
+	
+	public Vector2d getPosition() {
+		return position;
+	}
+
+	public int getEnergy() {
+		return energy;
+	}
+	
+	public MapDirection getOrientation() {
+		return orientation;
+	}
+
+	public Genotype getGenotype() {
+		return genotype;
+	}
+	
+	public int getChildren() {
+		return children;
+	}
+
+	public int getLifeExpectancy()
+	{
+		return deathEpoch-birthEpoch;
+	}
+
+	@Override
+	public String toString() {
+		return orientation.toString();
+	}
 }
