@@ -101,6 +101,7 @@ public class Animal implements IMapElement{
 	public void eatPlant(int plantEnergy)
 	{
 		this.energy += plantEnergy;
+		this.energyChanged();
 	}
 	
 	public void newChild()

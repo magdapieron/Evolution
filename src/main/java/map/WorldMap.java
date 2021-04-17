@@ -22,6 +22,8 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	private Random random = new Random();
 	private double jungleRatio;
 	private Vector2d mapCenter;
+	private Vector2d jungleLowerLeftCorner;
+	private Vector2d jungleUpperRightCorner;
 	
 	public WorldMap(int width, int height, double jungleRatio)
 	{
@@ -30,17 +32,19 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 		this.plants = new LinkedHashMap<>(); 
 		this.animals = new LinkedHashMap<>();			
 		this.jungleRatio = jungleRatio;
+		this.jungleLowerLeftCorner = jungleLowerLeftCorner();
+		this.jungleUpperRightCorner = jungleUpperRightCorner();
 		this.mapCenter = new Vector2d((int) Math.round(width/2), (int) Math.round(height/2));
 	}
 	
-	public Vector2d jungleLowerLeftCorner()
+	private Vector2d jungleLowerLeftCorner()
 	{		
 		int jungleWidth = (int) Math.round(width*jungleRatio);
 		int jungleHeight = (int) Math.round(height*jungleRatio);
 		return new Vector2d((int)Math.round(mapCenter.x - jungleWidth) , (int)Math.round(mapCenter.y - jungleHeight));
 	}
 	
-	public Vector2d jungleUpperRightCorner()
+	private Vector2d jungleUpperRightCorner()
 	{		
 		int jungleWidth = (int) Math.round(width*jungleRatio);
 		int jungleHeight = (int) Math.round(height*jungleRatio);
@@ -63,7 +67,7 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	public void addAnimalToPosition(Vector2d position, Animal animal)
 	{
 		TreeSet<Animal> animalsOnPosition = animals.get(animal.getPosition());
-		if(animalsOnPosition == null)
+		if(animalsOnPosition == null)											
 		{
 			TreeSet<Animal> set = new TreeSet<>(Comparator.comparing(Animal:: getEnergy));
 			set.add(animal);
@@ -123,17 +127,50 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 		return childPosition;
 	}
 	
+	public List<Animal> animalsToFeed(Vector2d position)
+	{
+		List<Animal> listAnimalsToFeed = new ArrayList<>();
+		
+		if(animals.containsKey(position) && !animals.get(position).isEmpty())
+		{			
+			int biggestEnergy = animals.get(position).first().getEnergy();
+			for (Animal animal : animals.get(position)) 
+			{
+		        if (animal.getEnergy() == biggestEnergy )
+		        	listAnimalsToFeed.add(animal);
+		    }	
+		}		
+		return listAnimalsToFeed;	
+	}
+	
+	public List<List<Animal>> getPairsAnimalsToReproduce(int startEnergy)
+	{
+		List<List<Animal>> listAnimalsToReproduce = new ArrayList<>();
+		List<Animal> animalsPair = new ArrayList<>();
+		
+		for (Vector2d key : animals.keySet())
+		{
+			if(animals.get(key).size() >= 2)
+			{
+				List<Animal> list = new ArrayList<>(animals.get(key));
+			
+				if(list.get(0).getEnergy() >= startEnergy/2 && list.get(1).getEnergy() >= startEnergy/2)
+				{
+					animalsPair.add(list.get(0));
+					animalsPair.add(list.get(1));
+				}	
+				listAnimalsToReproduce.add(animalsPair);
+			}
+		}
+		return listAnimalsToReproduce;
+	}
+	
 	// Return true if given position on the map is occupied 
 	public boolean isOccupied(Vector2d position)
 	{
 		if (animals.containsKey(position) && !animals.get(position).isEmpty())
 			return true;
 		return plants.containsKey(position);
-	}
-	
-	public List<Animal> animalsToFeed(Vector2d position)
-	{		
-		return null;	
 	}
 	
 	public Object objectsAt(Vector2d position)		// to check
@@ -181,4 +218,14 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	public int getHeight() {
 		return height;
 	}
+
+	public Vector2d getJungleLowerLeftCorner() {
+		return jungleLowerLeftCorner;
+	}
+
+	public Vector2d getJungleUpperRightCorner() {
+		return jungleUpperRightCorner;
+	}
+	
+	
 }
