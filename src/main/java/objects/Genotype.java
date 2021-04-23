@@ -150,5 +150,4 @@ public class Genotype {
 	public String toString() {
 		return "Genotype: " + genotype;
 	}
-	
 }

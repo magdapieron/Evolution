@@ -34,6 +34,7 @@ public class Animal implements IMapElement{
 		this.birthEpoch = birthEpoch;
 		this.deathEpoch = -1;
 		this.genotype = new Genotype();
+		this.map.placeAnimal(this);
 	}
 
 	// born animal
@@ -144,6 +145,8 @@ public class Animal implements IMapElement{
 			 obs.energyChanged(this);
 		 }
 	 }
+	
+	
 	
 	public Vector2d getPosition() {
 		return position;

@@ -17,6 +17,7 @@ public class Engine {
 	
 	public Engine(InitialParameters initialParameters)
 	{
+		checkJungleRatio(initialParameters.jungleRatio);
 		this.map = new WorldMap(initialParameters.width, initialParameters.height, initialParameters.jungleRatio);
 		this.plants = new ArrayList<>();
 		this.animals = new ArrayList<>();
@@ -24,6 +25,12 @@ public class Engine {
 		addFirstAnimals(initialParameters.numberOfFirstAnimals);
 	}
 
+	private void checkJungleRatio(double jungleRatio) 
+	{
+		if(jungleRatio >= 0.5)
+			throw new IllegalArgumentException("JungleRatio must be lower than 0.5! Change parameters!"); //  steppes cover most of the world
+	}
+	
 	private void addFirstAnimals(int numberOfFirstAnimals)
 	{
 		for(int i=0; i<numberOfFirstAnimals; i++)
@@ -37,7 +44,6 @@ public class Engine {
 			}
 			while(map.isOccupied(position));
 			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.startEnergy, this.map, 0); // first animals have birthepoch = 0?
-			this.map.placeAnimal(animal);
 			animals.add(animal);
 		}
 	}
@@ -65,7 +71,7 @@ public class Engine {
 		List<Plant> plantsToRemove = new ArrayList<>();
 		for(Plant plant : plants)
 		{
-			List<Animal> listAnimalsToFeed = map.animalsToFeed(plant.getPosition());
+			List<Animal> listAnimalsToFeed = map.getAnimalsToFeed(plant.getPosition());
 			for(Animal animal : listAnimalsToFeed)
 			{
 				animal.eatPlant(initialParameters.plantEnergy/listAnimalsToFeed.size());
@@ -105,8 +111,8 @@ public class Engine {
 	
 	private void addPlantToJungle()
 	{
-		Vector2d rightCorner = map.getJungleUpperRightCorner();
-		Vector2d leftCorner = map.getJungleLowerLeftCorner();		
+		Vector2d rightCorner = map.jungleUpperRightCorner();
+		Vector2d leftCorner = map.jungleLowerLeftCorner();		
 		int ctr=0;
 		Vector2d position = null;
 		
@@ -128,8 +134,8 @@ public class Engine {
 	
 	private void addPlantToSteppe()
 	{
-		Vector2d rightCorner = map.getJungleUpperRightCorner();
-		Vector2d leftCorner = map.getJungleLowerLeftCorner();		
+		Vector2d rightCorner = map.jungleUpperRightCorner();
+		Vector2d leftCorner = map.jungleLowerLeftCorner();		
 		int ctr=0;
 		Vector2d position = null;
 		

@@ -1,8 +1,6 @@
 package objects;
 
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import enums.MapDirection;
@@ -19,7 +17,6 @@ public class AnimalTest {
 		int energy = 0;
 		WorldMap map = new WorldMap(5,5, 0.3);
 		MapDirection orientation = MapDirection.randomOrientation();
-		Genotype genotype2 = new Genotype();
 		
 		Animal animal = new Animal(genotype, position, orientation, energy, map, 0);
 		
@@ -28,7 +25,7 @@ public class AnimalTest {
 	}
 	
 	@Test
-	public void reproduceTest()
+	public void reproductionTest()
 	{
 		WorldMap map = new WorldMap(5,5, 0.3);
 		Animal animal1 = new Animal(new Vector2d(1,2), MapDirection.NORTH, 4, map, 0);
