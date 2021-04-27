@@ -51,6 +51,7 @@ public class GenotypeTest {
 	{
 		Genotype genotype = new Genotype();
 		int gene = genotype.drawGene();
+		
 		assertTrue(gene >= 0 && gene <=7);
 	}
 

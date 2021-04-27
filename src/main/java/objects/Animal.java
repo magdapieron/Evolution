@@ -1,5 +1,6 @@
 package objects;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import interfaces.IPositionChangeObserver;
@@ -9,8 +10,11 @@ import interfaces.IMapElement;
 import map.Vector2d;
 import map.WorldMap;
 
-public class Animal implements IMapElement{
+public class Animal implements Comparable<Animal>, IMapElement {
 
+	private static int currentId;
+	private int id;
+	
 	private Genotype genotype;
 	private Vector2d position;
 	private int energy;
@@ -21,11 +25,12 @@ public class Animal implements IMapElement{
 	private int children;
 	private int birthEpoch;
 	private int deathEpoch;
-	// private int descendants; ?
 	
 	// initial animal with random genes
 	public Animal(Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
 	{
+		this.id = currentId;
+		currentId++;
 		this.position = initialPosition;
 		this.orientation = initialOrientation;
 		this.energy = energy;
@@ -34,7 +39,6 @@ public class Animal implements IMapElement{
 		this.birthEpoch = birthEpoch;
 		this.deathEpoch = -1;
 		this.genotype = new Genotype();
-		this.map.placeAnimal(this);
 	}
 
 	// born animal
@@ -45,7 +49,7 @@ public class Animal implements IMapElement{
 	}
 	
 	// draw of rotation based on genotype 
-	public void move()		
+	public void move(int moveEnergy)		
 	{	
 		int rotation = this.genotype.drawGene();
 		this.orientation = orientation.changeOrientation(rotation);
@@ -55,30 +59,35 @@ public class Animal implements IMapElement{
 		int newX = newPosition.x;
 		int newY = newPosition.y;
 		
-		if(newX > map.getWidth())
-		{
-			newX = newX - map.getWidth();
-		}
-		else if(newX == -1)
-		{
-			newX = newX + map.getWidth();
-		}
-		
-		if(newY > map.getHeight())
-		{
-			newY = newY - map.getHeight();
-		}
-		else if(newY == -1)
-		{
-			newX = newY + map.getHeight();
-		}
-		
-		this.position = new Vector2d(newX, newY);
+		this.position = wrapEdgesOfMap(newX, newY);
 		
 		positionChanged(oldPosition, position);
 		
-		this.energy -= 1;
+		this.energy -= moveEnergy;
 		this.energyChanged();
+	}
+	
+	private Vector2d wrapEdgesOfMap(int x, int y)
+	{
+		if(x > map.getWidth())
+		{
+			x = x - map.getWidth();
+		}
+		else if(x == -1)
+		{
+			x = x + map.getWidth();
+		}
+		
+		if(y > map.getHeight())
+		{
+			y = y - map.getHeight();
+		}
+		else if(y == -1)
+		{
+			y = y + map.getHeight();
+		}
+		
+		return new Vector2d(x,y);
 	}
 	
 	public Animal reproduction(Animal other)
@@ -87,15 +96,15 @@ public class Animal implements IMapElement{
 		MapDirection childOrientation = MapDirection.randomOrientation();
 		int childEnergy = this.energy/4 + other.getEnergy()/4;
 		Genotype childGenotype = this.genotype.createGenotype(other.getGenotype());
-		
-		this.energy -= this.energy*(1/4);
+
+		this.energy -= this.energy/4;
 		this.energyChanged();
-		other.energy -= other.energy*(1/4);
-		other.energyChanged();
-		
 		this.newChild();
+
+		other.energy -= other.energy/4;
+		other.energyChanged();
 		other.newChild();
-		
+	
 		return new Animal(childGenotype, childPosition, childOrientation, childEnergy, this.map, this.birthEpoch);		
 	}
 	
@@ -145,9 +154,7 @@ public class Animal implements IMapElement{
 			 obs.energyChanged(this);
 		 }
 	 }
-	
-	
-	
+
 	public Vector2d getPosition() {
 		return position;
 	}
@@ -173,8 +180,18 @@ public class Animal implements IMapElement{
 		return deathEpoch-birthEpoch;
 	}
 
+	public int getId()
+	{
+		return id;
+	}
+	
 	@Override
 	public String toString() {
 		return orientation.toString();
+	}
+
+	@Override
+	public int compareTo(Animal o) {
+		return Comparator.comparing(Animal::getEnergy).reversed().thenComparing(Animal::getId).compare(this, o);
 	}
 }

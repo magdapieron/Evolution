@@ -45,6 +45,7 @@ public class Engine {
 			while(map.isOccupied(position));
 			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.startEnergy, this.map, 0); // first animals have birthepoch = 0?
 			animals.add(animal);
+			this.map.placeAnimal(animal);
 		}
 	}
 	
@@ -63,7 +64,7 @@ public class Engine {
 	public void moveAnimals()
 	{
 		for(Animal animal : animals)
-			animal.move();
+			animal.move(initialParameters.moveEnergy);
 	}
 	
 	public void eating()
@@ -132,7 +133,7 @@ public class Engine {
 			
 	}
 	
-	private void addPlantToSteppe()
+	private void addPlantToSteppe()		// better way? 
 	{
 		Vector2d rightCorner = map.jungleUpperRightCorner();
 		Vector2d leftCorner = map.jungleLowerLeftCorner();		
@@ -144,14 +145,27 @@ public class Engine {
 			position = map.randomPosition(initialParameters.width, 0, initialParameters.height, 0);
 			ctr++;
 		}
-		while(map.isOccupied(position) && ctr <= initialParameters.width*initialParameters.height && position.x >= leftCorner.x 
-				&& position.x <= rightCorner.x && position.y >= leftCorner.y && position.y <= rightCorner.y);
+		while(map.isOccupied(position) && ctr <= initialParameters.width*initialParameters.height - ((rightCorner.x-leftCorner.y)*(rightCorner.y*leftCorner.y)) &&
+				position.x >= leftCorner.x && position.x <= rightCorner.x && position.y >= leftCorner.y && position.y <= rightCorner.y);
+				
 		
 		if(ctr < initialParameters.width*initialParameters.height)
 		{
 			Plant newPlant = new Plant(position);
 			plants.add(newPlant);
 			this.map.setPlant(newPlant);
+		}
+	}
+	
+	public void nextDay()
+	{
+		if(animals.size() > 0)
+		{
+			removeDeadAnimals();
+			moveAnimals();
+			eating();
+			reproduceAnimals();
+			addNewPlants();	
 		}
 	}
 }

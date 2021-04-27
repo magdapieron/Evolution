@@ -1,6 +1,7 @@
 package objects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -68,27 +69,20 @@ public class Genotype {
 		int index1 = random.nextInt(32);				// must be divided into 3 groups
 		int index2 = random.nextInt(32);
 		
-		while(index1 == index2)						
+		while(index1 >= index2)						
 			index2 = random.nextInt(32);				
+
+		boolean[] parents = drawOfGroups();		
 		
-		if(index1 > index2)
-		{
-			int tmp = index1;
-			index1 = index2;
-			index2 = tmp;
-		}
-		
-		List<Boolean> parents = drawOfGroups();		
-		
-		for(int j=0; j<3; j++)
+		for(int i=0; i<3; i++)
 		{
 			Genotype parentGenotype = null;
-			if(parents.get(j))
+			if(parents[i])
 				 parentGenotype = this;
 			else
 				parentGenotype = other;
 			
-			switch(j)
+			switch(i)
 			{
 			case 0: childGenotype.addAll(donateGenes(0, index1, parentGenotype));
 			break;
@@ -103,26 +97,15 @@ public class Genotype {
 		return new Genotype(childGenotype);
 	}
 	
-	private List<Boolean> drawOfGroups()
+	private boolean[] drawOfGroups()
 	{
-		List<Boolean> parents = new ArrayList<>();
-		int i=0;
+		boolean[] parents = new boolean[3];
+		int i = random.nextInt(3);				// 3 groups of genes, true if from this, false if from other
+		Arrays.fill(parents, false);
 		
-		while(i < 3)						// 3 groups of genes, true if from this, false if from other
-		{													
-			parents.add(i, random.nextBoolean());
-			i++;
-		}
-		
-		if(!parents.contains(false))	
-		{															
-			parents.add(random.nextInt(3), false);
-		}
-		else if(!parents.contains(true))
-		{
-			parents.add(random.nextInt(3), true);
-		}											
-		return parents;					// now we are sure, that child will receive genes after both parents
+		parents[i] = true;						
+										
+		return parents;	
 	}
 	
 	private List<Integer> donateGenes(int start, int end, Genotype parentGenotype)
