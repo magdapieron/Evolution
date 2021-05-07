@@ -69,8 +69,12 @@ public class Genotype {
 		int index1 = random.nextInt(32);				// must be divided into 3 groups
 		int index2 = random.nextInt(32);
 		
-		while(index1 >= index2)						
-			index2 = random.nextInt(32);				
+		if(index1 >= index2)
+		{
+			int tmp = index2;
+			index2 = index1;
+			index1 = tmp;
+		}				
 
 		boolean[] parents = drawOfGroups();		
 		

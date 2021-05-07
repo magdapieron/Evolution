@@ -1,15 +1,10 @@
 package map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import enums.MapDirection;
 import objects.Animal;
@@ -17,12 +12,6 @@ import objects.Plant;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorldMapTest {
-
-	@Mock
-	private Map<Vector2d, TreeSet<Animal>> animals;
-	
-	@InjectMocks
-	private WorldMap worldMap = new WorldMap(100 ,50, 0.1);
 	
 	private WorldMap map;
 	
@@ -87,9 +76,6 @@ public class WorldMapTest {
 		Vector2d position2 = new Vector2d(3,6);
 		Animal animal1 = new Animal(position1, MapDirection.NORTH, 50, map, 0);
 		Animal animal2 = new Animal(position2, MapDirection.SOUTH, 55, map, 0);
-		
-//		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> map.removeAnimalFromPosition(new Vector2d(1,1), animal1));
-//		assertEquals("No animal at position: " + new Vector2d(1,1), ex.getMessage());
 		
 		map.placeAnimal(animal1);
 		map.placeAnimal(animal2);

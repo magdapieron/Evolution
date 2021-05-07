@@ -17,33 +17,27 @@ public class Engine {
 	
 	public Engine(InitialParameters initialParameters)
 	{
-		checkJungleRatio(initialParameters.jungleRatio);
-		this.map = new WorldMap(initialParameters.width, initialParameters.height, initialParameters.jungleRatio);
+		initialParameters.checkParameters();
+		this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight(), initialParameters.getJungleRatio());
 		this.plants = new ArrayList<>();
 		this.animals = new ArrayList<>();
 		this.initialParameters = initialParameters;
-		addFirstAnimals(initialParameters.numberOfFirstAnimals);
-	}
-
-	private void checkJungleRatio(double jungleRatio) 
-	{
-		if(jungleRatio >= 0.5)
-			throw new IllegalArgumentException("JungleRatio must be lower than 0.5! Change parameters!"); //  steppes cover most of the world
+		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
 	}
 	
 	private void addFirstAnimals(int numberOfFirstAnimals)
 	{
 		for(int i=0; i<numberOfFirstAnimals; i++)
 		{
-			if(numberOfFirstAnimals > initialParameters.height*initialParameters.width)
+			if(numberOfFirstAnimals > initialParameters.getHeight()*initialParameters.getWidth())
 				throw  new IllegalArgumentException("Too much initial animals!");
 			Vector2d position;
 			do
 			{
-				position = map.randomPosition(initialParameters.width, 0, initialParameters.height, 0);
+				position = map.randomPosition(initialParameters.getWidth(), 0, initialParameters.getHeight(), 0);
 			}
 			while(map.isOccupied(position));
-			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.startEnergy, this.map, 0); // first animals have birthepoch = 0?
+			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.getStartEnergy(), this.map, 0); // first animals have birthepoch = 0?
 			animals.add(animal);
 			this.map.placeAnimal(animal);
 		}
@@ -51,20 +45,25 @@ public class Engine {
 	
 	public void removeDeadAnimals() 
 	{
+		List<Animal> animalsToRemove = new ArrayList<>();
 		for(Animal animal : animals)
 		{
-			if(animal.getEnergy() == 0)
+			if(animal.getEnergy() <= 0)
 			{
 				this.map.removeDeadAnimal(animal.getPosition(), animal);
-				animals.remove(animal);	
+				animalsToRemove.add(animal);	
 			}
-		}		 
+		}	
+		for(Animal animal : animalsToRemove)
+		{
+			animals.remove(animal);
+		}
 	}
 	
 	public void moveAnimals()
 	{
 		for(Animal animal : animals)
-			animal.move(initialParameters.moveEnergy);
+			animal.move(initialParameters.getMoveEnergy());
 	}
 	
 	public void eating()
@@ -75,7 +74,7 @@ public class Engine {
 			List<Animal> listAnimalsToFeed = map.getAnimalsToFeed(plant.getPosition());
 			for(Animal animal : listAnimalsToFeed)
 			{
-				animal.eatPlant(initialParameters.plantEnergy/listAnimalsToFeed.size());
+				animal.eatPlant(initialParameters.getPlantEnergy()/listAnimalsToFeed.size());
 			}
 			if(!listAnimalsToFeed.isEmpty())
 			{
@@ -92,7 +91,7 @@ public class Engine {
 	
 	public void reproduceAnimals()
 	{
-		List<List<Animal>> listAnimalsToReproduce = map.getPairsAnimalsToReproduce(initialParameters.startEnergy);
+		List<List<Animal>> listAnimalsToReproduce = map.getPairsAnimalsToReproduce(initialParameters.getStartEnergy());
 		if(!listAnimalsToReproduce.isEmpty())
 		{
 			for(List<Animal> parents : listAnimalsToReproduce)
@@ -114,7 +113,8 @@ public class Engine {
 	{
 		Vector2d rightCorner = map.jungleUpperRightCorner();
 		Vector2d leftCorner = map.jungleLowerLeftCorner();		
-		int ctr=0;
+		int jungleSurface = (rightCorner.x-leftCorner.x)*(rightCorner.y-leftCorner.y);
+		int ctr = 0;
 		Vector2d position = null;
 		
 		do
@@ -122,34 +122,33 @@ public class Engine {
 			position = map.randomPosition(rightCorner.x, leftCorner.x, rightCorner.y, leftCorner.y);
 			ctr++;
 		}
-		while(map.isOccupied(position) && ctr <= (rightCorner.x-leftCorner.y)*(rightCorner.y*leftCorner.y));
+		while(map.isOccupied(position) && ctr < jungleSurface);
 		
-		if(ctr < (rightCorner.x-leftCorner.y)*(rightCorner.y*leftCorner.y))
+		if(ctr <= jungleSurface)
 		{
 			Plant newPlant = new Plant(position);
 			plants.add(newPlant);
 			this.map.setPlant(newPlant);
 		}
-			
 	}
 	
-	private void addPlantToSteppe()		// better way? 
+	private void addPlantToSteppe()	
 	{
 		Vector2d rightCorner = map.jungleUpperRightCorner();
 		Vector2d leftCorner = map.jungleLowerLeftCorner();		
+		int steppeSurface = initialParameters.getHeight()*initialParameters.getWidth() - (rightCorner.x-leftCorner.x)*(rightCorner.y-leftCorner.y);
 		int ctr=0;
 		Vector2d position = null;
 		
 		do
 		{
-			position = map.randomPosition(initialParameters.width, 0, initialParameters.height, 0);
+			position = map.randomPosition(initialParameters.getWidth(), 0, initialParameters.getHeight(), 0);
 			ctr++;
 		}
-		while(map.isOccupied(position) && ctr <= initialParameters.width*initialParameters.height - ((rightCorner.x-leftCorner.y)*(rightCorner.y*leftCorner.y)) &&
-				position.x >= leftCorner.x && position.x <= rightCorner.x && position.y >= leftCorner.y && position.y <= rightCorner.y);
-				
-		
-		if(ctr < initialParameters.width*initialParameters.height)
+		while(map.isOccupied(position) && ctr < steppeSurface && ( position.y <= leftCorner.y || position.y >= rightCorner.y || 
+				position.x <= leftCorner.x || position.x >= rightCorner.x));
+						
+		if(ctr <= steppeSurface)
 		{
 			Plant newPlant = new Plant(position);
 			plants.add(newPlant);
@@ -168,4 +167,14 @@ public class Engine {
 			addNewPlants();	
 		}
 	}
+
+	public List<Plant> getPlants() {
+		return plants;
+	}
+
+	public List<Animal> getAnimals() {
+		return animals;
+	}
+	
+	
 }

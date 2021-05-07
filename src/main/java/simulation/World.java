@@ -61,8 +61,6 @@ public class World /*extends Application*/ {
 //	        e.printStackTrace();
 //	    }
     	
-    	WorldMap map = new WorldMap(10,10,0.1);
-    	map.removeAnimalFromPosition(new Vector2d(1,1), new Animal(new Vector2d(1,1),MapDirection.EAST, 0, map, 0));
     }
 
 }

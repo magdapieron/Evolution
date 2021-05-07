@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import enums.MapDirection;
 import interfaces.IEnergyChangeObserver;
 import interfaces.IPositionChangeObserver;
@@ -16,7 +14,6 @@ import objects.Plant;
 
 public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(WorldMap.class);
 	private int width;
 	private int height;
 	private Map<Vector2d, Plant> plants;
@@ -47,7 +44,7 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	{				
 		int jungleWidth = (int) Math.floor(width*jungleRatio);
 		int jungleHeight = (int) Math.floor(height*jungleRatio);
-
+		
 		return new Vector2d((int)Math.floor(mapCenter.x + jungleWidth/2), (int)Math.floor(mapCenter.y + jungleHeight/2));
 	}
 	
@@ -83,13 +80,7 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	
 	public void removeAnimalFromPosition(Vector2d position, Animal animal)
 	{
-		TreeSet<Animal> animalsOnPosition = animals.get(position);
-		
-		if(animalsOnPosition != null && !animalsOnPosition.isEmpty())
-			animalsOnPosition.remove(animal);
-
-		else
-			LOGGER.trace("No animal on position: " + position);
+		animals.get(position).remove(animal);
 	}
 	
 	public void removeDeadAnimal(Vector2d position, Animal animal)
@@ -174,11 +165,7 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 	
 	public void removePlant(Plant plant)
 	{
-		if(!plants.containsValue(plant))
-			plants.remove(plant.getPosition());
-
-		else
-			LOGGER.trace("No plant on position: " + plant.getPosition());
+		plants.remove(plant.getPosition());
 	}
 	
 	public void setPlant(Plant plant)
