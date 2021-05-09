@@ -137,4 +137,32 @@ public class Genotype {
 	public String toString() {
 		return "Genotype: " + genotype;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((genotype == null) ? 0 : genotype.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Genotype)) {
+			return false;
+		}
+		Genotype other = (Genotype) obj;
+		if (genotype == null) {
+			if (other.genotype != null) {
+				return false;
+			}
+		} else if (!genotype.equals(other.genotype)) {
+			return false;
+		}
+		return true;
+	}
+	
 }

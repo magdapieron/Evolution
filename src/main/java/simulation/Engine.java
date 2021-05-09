@@ -8,12 +8,13 @@ import map.WorldMap;
 import objects.Animal;
 import objects.Plant;
 
-public class Engine {
+public class Engine implements Runnable{
 	
 	private WorldMap map;
 	private InitialParameters initialParameters; 
 	private List<Plant> plants;
 	private List<Animal> animals;
+	private Statistics statistics;
 	
 	public Engine(InitialParameters initialParameters)
 	{
@@ -23,6 +24,7 @@ public class Engine {
 		this.animals = new ArrayList<>();
 		this.initialParameters = initialParameters;
 		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
+		
 	}
 	
 	private void addFirstAnimals(int numberOfFirstAnimals)
@@ -37,7 +39,7 @@ public class Engine {
 				position = map.randomPosition(initialParameters.getWidth(), 0, initialParameters.getHeight(), 0);
 			}
 			while(map.isOccupied(position));
-			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.getStartEnergy(), this.map, 0); // first animals have birthepoch = 0?
+			Animal animal = new Animal(position, MapDirection.randomOrientation(), initialParameters.getStartEnergy(), this.map, 1); 
 			animals.add(animal);
 			this.map.placeAnimal(animal);
 		}
@@ -176,5 +178,15 @@ public class Engine {
 		return animals;
 	}
 	
-	
+	@Override
+	public void run() {
+		try 
+		{
+			Thread.sleep(100);
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 }
