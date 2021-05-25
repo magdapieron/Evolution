@@ -16,15 +16,15 @@ public class Engine implements Runnable{
 	private List<Animal> animals;
 	private Statistics statistics;
 	
-	public Engine(InitialParameters initialParameters)
-	{
-		initialParameters.checkParameters();
-		this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight(), initialParameters.getJungleRatio());
-		this.plants = new ArrayList<>();
-		this.animals = new ArrayList<>();
-		this.initialParameters = initialParameters;
-		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
-		
+public Engine(InitialParameters initialParameters)
+{
+	initialParameters.checkParameters();
+	this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight(), initialParameters.getJungleRatio());
+	this.plants = new ArrayList<>();
+	this.animals = new ArrayList<>();
+	this.initialParameters = initialParameters;
+	addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
+	this.statistics = new Statistics();
 	}
 	
 	private void addFirstAnimals(int numberOfFirstAnimals)
@@ -60,6 +60,7 @@ public class Engine implements Runnable{
 		{
 			animals.remove(animal);
 		}
+		statistics.addDeadAnimals(animalsToRemove);
 	}
 	
 	public void moveAnimals()
@@ -167,6 +168,7 @@ public class Engine implements Runnable{
 			eating();
 			reproduceAnimals();
 			addNewPlants();	
+			statistics.refreshStatistics(animals.size(), plants.size(), animals);
 		}
 	}
 
@@ -180,13 +182,25 @@ public class Engine implements Runnable{
 	
 	@Override
 	public void run() {
-		try 
+		
+		while(true)
 		{
-			Thread.sleep(100);
-		} 
-		catch (InterruptedException e) 
-		{
-			e.printStackTrace();
+			if(true /*if stop not pushed*/ )
+			{
+				try 
+				{
+					Thread.sleep(100);
+					nextDay();
+				} 
+				catch (InterruptedException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+			
+			}
 		}
 	}
 }

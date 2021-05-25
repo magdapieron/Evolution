@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.Reader;
 import com.google.gson.Gson;
 
+import animation.Main;
+
 public class World {
 	
     public static void main(String[] args) {
@@ -27,6 +29,8 @@ public class World {
 		Thread engine2 = new Thread(new Engine(initialParameters));
 		
 		engine1.start();
-		engine2.start();  	
+		engine2.start();
+		
+		//Main simulation = new Main(engine1, engine2); 
     }
 }

@@ -1,12 +1,19 @@
 package simulation;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import enums.MapDirection;
 import map.Vector2d;
+import map.WorldMap;
+import objects.Animal;
 import objects.Plant;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -16,8 +23,8 @@ class EngineTest {
 	
 //	@Mock
 //	private WorldMap map = new WorldMap(100, 50, 0.1);
-	
-	@InjectMocks
+//	
+//	@InjectMocks
 	private Engine engine;
 	
 	@Test
@@ -71,7 +78,7 @@ class EngineTest {
 		assertTrue(engine.getAnimals().get(0).getEnergy() == 90);
 		assertNotEquals(position, engine.getAnimals().get(0).getPosition());
 	}
-	
+//	
 //	@Test
 //	void eatingTest() {
 //		

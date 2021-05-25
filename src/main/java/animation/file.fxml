@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="750.0" style="-fx-background-color: GAINSBORO;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="animation.Controller">
    <children>
-      <TabPane prefHeight="370.0" prefWidth="370.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Pane layoutX="393.0" prefHeight="370.0" prefWidth="370.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Pane layoutY="400.0" prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-      <Button layoutX="14.0" layoutY="376.0" mnemonicParsing="false" text="Stop" />
-      <Button layoutX="77.0" layoutY="376.0" mnemonicParsing="false" text="Start" />
-      <Button layoutX="403.0" layoutY="376.0" mnemonicParsing="false" text="Stop" />
-      <Button layoutX="470.0" layoutY="376.0" mnemonicParsing="false" text="Start" />
-      <Pane layoutX="258.0" layoutY="400.0" prefHeight="150.0" prefWidth="175.0" style="-fx-background-color: GRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" />
-      <Pane layoutX="370.0" layoutY="400.0" prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: LIGHTGRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="175.0" />
-      <Pane layoutX="210.0" layoutY="410.0" prefHeight="150.0" prefWidth="175.0" style="-fx-background-color: GRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <TableView fx:id="map2" editable="true" layoutX="10.0" layoutY="12.0" prefHeight="400.0" prefWidth="374.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <TableView fx:id="map1" editable="true" prefHeight="400.0" prefWidth="374.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+      <Button layoutX="-6.0" layoutY="2.0" mnemonicParsing="false" text="Stop" textAlignment="CENTER" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="71.0" layoutY="2.0" mnemonicParsing="false" text="Start" textAlignment="CENTER" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="350.0" layoutY="2.0" mnemonicParsing="false" text="Stop" textAlignment="CENTER" AnchorPane.rightAnchor="245.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="465.0" layoutY="2.0" mnemonicParsing="false" text="Start" textAlignment="CENTER" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Pane prefHeight="150.0" prefWidth="174.0" style="-fx-background-color: LIGHTGRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" />
+      <Pane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="174.0" />
+      <Pane prefHeight="150.0" prefWidth="174.0" style="-fx-background-color: LIGHTGRAY;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Button layoutX="141.0" layoutY="5.0" mnemonicParsing="false" text="Mark dominant" textAlignment="CENTER" AnchorPane.leftAnchor="155.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="533.0" layoutY="2.0" mnemonicParsing="false" text="Mark dominant" textAlignment="CENTER" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="297.0" layoutY="2.0" mnemonicParsing="false" text="Save stats" textAlignment="CENTER" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
+      <Button layoutX="663.0" layoutY="2.0" mnemonicParsing="false" text="Save stats" textAlignment="CENTER" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="0.0">
+         <effect>
+            <InnerShadow />
+         </effect></Button>
    </children>
 </AnchorPane>
