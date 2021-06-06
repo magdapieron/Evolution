@@ -62,7 +62,10 @@ public class Statistics {
 	                maxEntry = entry;
 	            }
 	        }
-	        this.dominantGenotype = maxEntry.getKey();
+	        if(maxEntry != null)
+			{
+	        	this.dominantGenotype = maxEntry.getKey();
+			}
 	}
 	
 	private void setAvgEnergyLevelOfLivingAnimals(List<Animal> animals) 

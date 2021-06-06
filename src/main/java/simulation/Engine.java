@@ -2,29 +2,34 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import animation.Controller;
 import enums.MapDirection;
+import javafx.application.Platform;
 import map.Vector2d;
 import map.WorldMap;
 import objects.Animal;
 import objects.Plant;
 
-public class Engine implements Runnable{
-	
+public class Engine implements  Runnable{
+
+	private boolean running;
+	private Controller controller;
 	private WorldMap map;
-	private InitialParameters initialParameters; 
+	private InitialParameters initialParameters;
 	private List<Plant> plants;
 	private List<Animal> animals;
 	private Statistics statistics;
 	
 public Engine(InitialParameters initialParameters)
 {
-	initialParameters.checkParameters();
+	this.initialParameters = initialParameters;
 	this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight(), initialParameters.getJungleRatio());
 	this.plants = new ArrayList<>();
 	this.animals = new ArrayList<>();
-	this.initialParameters = initialParameters;
 	addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
 	this.statistics = new Statistics();
+	this.running = false;
 	}
 	
 	private void addFirstAnimals(int numberOfFirstAnimals)
@@ -44,8 +49,8 @@ public Engine(InitialParameters initialParameters)
 			this.map.placeAnimal(animal);
 		}
 	}
-	
-	public void removeDeadAnimals() 
+
+	private void removeDeadAnimals()
 	{
 		List<Animal> animalsToRemove = new ArrayList<>();
 		for(Animal animal : animals)
@@ -62,14 +67,14 @@ public Engine(InitialParameters initialParameters)
 		}
 		statistics.addDeadAnimals(animalsToRemove);
 	}
-	
-	public void moveAnimals()
+
+	private void moveAnimals()
 	{
 		for(Animal animal : animals)
 			animal.move(initialParameters.getMoveEnergy());
 	}
-	
-	public void eating()
+
+	private void eating()
 	{
 		List<Plant> plantsToRemove = new ArrayList<>();
 		for(Plant plant : plants)
@@ -91,8 +96,8 @@ public Engine(InitialParameters initialParameters)
 			plants.remove(plantToRemove);
 		}
 	}
-	
-	public void reproduceAnimals()
+
+	private void reproduceAnimals()
 	{
 		List<List<Animal>> listAnimalsToReproduce = map.getPairsAnimalsToReproduce(initialParameters.getStartEnergy());
 		if(!listAnimalsToReproduce.isEmpty())
@@ -105,8 +110,8 @@ public Engine(InitialParameters initialParameters)
 			}
 		}
 	}
-	
-	public void addNewPlants()
+
+	private void addNewPlants()
 	{
 		addPlantToJungle();
 		addPlantToSteppe();
@@ -118,7 +123,7 @@ public Engine(InitialParameters initialParameters)
 		Vector2d leftCorner = map.jungleLowerLeftCorner();		
 		int jungleSurface = (rightCorner.x-leftCorner.x)*(rightCorner.y-leftCorner.y);
 		int ctr = 0;
-		Vector2d position = null;
+		Vector2d position;
 		
 		do
 		{
@@ -141,7 +146,7 @@ public Engine(InitialParameters initialParameters)
 		Vector2d leftCorner = map.jungleLowerLeftCorner();		
 		int steppeSurface = initialParameters.getHeight()*initialParameters.getWidth() - (rightCorner.x-leftCorner.x)*(rightCorner.y-leftCorner.y);
 		int ctr=0;
-		Vector2d position = null;
+		Vector2d position;
 		
 		do
 		{
@@ -161,15 +166,49 @@ public Engine(InitialParameters initialParameters)
 	
 	public void nextDay()
 	{
-		if(animals.size() > 0)
+		removeDeadAnimals();
+		moveAnimals();
+		eating();
+		reproduceAnimals();
+		addNewPlants();
+		statistics.refreshStatistics(animals.size(), plants.size(), animals);
+	//	controller.nextDay(animals, plants, statistics);
+	}
+
+	public boolean areAliveAnimals()
+	{
+		return animals.size() != 0;
+	}
+
+	public void stopStart()
+	{
+		running = !running;
+	}
+
+	@Override
+	public void run()
+	{
+		while(areAliveAnimals())
 		{
-			removeDeadAnimals();
-			moveAnimals();
-			eating();
-			reproduceAnimals();
-			addNewPlants();	
-			statistics.refreshStatistics(animals.size(), plants.size(), animals);
+			if(running)
+			{
+				try
+				{
+					Thread.sleep(100);
+					Platform.runLater(() -> nextDay());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
+	}
+
+	public InitialParameters getInitialParameters() {
+		return initialParameters;
 	}
 
 	public List<Plant> getPlants() {
@@ -179,28 +218,12 @@ public Engine(InitialParameters initialParameters)
 	public List<Animal> getAnimals() {
 		return animals;
 	}
-	
-	@Override
-	public void run() {
-		
-		while(true)
-		{
-			if(true /*if stop not pushed*/ )
-			{
-				try 
-				{
-					Thread.sleep(100);
-					nextDay();
-				} 
-				catch (InterruptedException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			else
-			{
-			
-			}
-		}
+
+	public Statistics getStatistics() {
+		return statistics;
+	}
+	// to remove for later
+	public boolean isRunning() {
+		return running;
 	}
 }
