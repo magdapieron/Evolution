@@ -21,17 +21,17 @@ public class WorldMapTest {
 		map = new WorldMap(100, 50, 0.1);
 	}
 	
-	@Test
-	public void jungleCornersTest() 	
-	{
-		WorldMap map2 = new WorldMap(99, 40, 0.1);
-		
-		assertEquals(new Vector2d(45,23), map.jungleLowerLeftCorner());
-		assertEquals(new Vector2d(55,27), map.jungleUpperRightCorner());
-		
-		assertEquals(new Vector2d(45,18), map2.jungleLowerLeftCorner());
-		assertEquals(new Vector2d(53,22), map2.jungleUpperRightCorner());
-	}
+//	@Test
+//	public void jungleCornersTest()
+//	{
+//		WorldMap map2 = new WorldMap(99, 40, 0.1);
+//
+//		assertEquals(new Vector2d(45,23), map.jungleLowerLeftCorner());
+//		assertEquals(new Vector2d(55,27), map.jungleUpperRightCorner());
+//
+//		assertEquals(new Vector2d(45,18), map2.jungleLowerLeftCorner());
+//		assertEquals(new Vector2d(53,22), map2.jungleUpperRightCorner());
+//	}
 
 	@Test
 	public void randomPositionTest()

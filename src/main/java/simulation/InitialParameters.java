@@ -12,6 +12,9 @@ public class InitialParameters {
 	  
 	public void checkParameters() 
 	{
+		if(width > 23 || height > 23)
+			throw new IllegalArgumentException("The map can be up to 23x23! Change parameters!");
+
 		if(jungleRatio >= 0.5)
 			throw new IllegalArgumentException("JungleRatio must be lower than 0.5! Change parameters!"); //  steppes cover most of the world
 			
@@ -19,7 +22,7 @@ public class InitialParameters {
 		int jungleHeight = (int) Math.floor(height*jungleRatio);
 		
 		if(jungleHeight <= 0 || jungleWidth <= 0)
-			throw new IllegalArgumentException("There's no Jungle! Change parameters!");	
+			throw new IllegalArgumentException("There's no Jungle! Change parameters!");
 	}
 
 	public int getWidth() {

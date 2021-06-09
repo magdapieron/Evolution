@@ -12,7 +12,7 @@ import interfaces.IPositionChangeObserver;
 import objects.Animal;
 import objects.Plant;
 
-public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver {
+public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver{
 	
 	private int width;
 	private int height;
@@ -30,22 +30,6 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 		this.animals = new LinkedHashMap<>();			
 		this.jungleRatio = jungleRatio;
 		this.mapCenter = new Vector2d((int) Math.round(width/2), (int) Math.round(height/2));
-	}
-	
-	public Vector2d jungleLowerLeftCorner()		
-	{		
-		int jungleWidth = (int) Math.floor(width*jungleRatio);
-		int jungleHeight = (int) Math.floor(height*jungleRatio);
-		
-		return new Vector2d((int)Math.floor(mapCenter.x - jungleWidth/2), (int)Math.floor(mapCenter.y - jungleHeight/2));
-	}
-	
-	public Vector2d jungleUpperRightCorner()
-	{				
-		int jungleWidth = (int) Math.floor(width*jungleRatio);
-		int jungleHeight = (int) Math.floor(height*jungleRatio);
-		
-		return new Vector2d((int)Math.floor(mapCenter.x + jungleWidth/2), (int)Math.floor(mapCenter.y + jungleHeight/2));
 	}
 	
 	public Vector2d randomPosition(int maxX, int minX, int maxY, int minY)
@@ -191,5 +175,9 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver 
 
 	public int getHeight() {
 		return height;
-	}	
+	}
+
+	public Vector2d getMapCenter() {
+		return mapCenter;
+	}
 }

@@ -7,18 +7,18 @@
 //import java.util.List;
 //
 //import static org.junit.Assert.*;
-//
-////@RunWith(MockitoJUnitRunner.class)
-//public class EngineTest {
-//
-//	InitialParameters initialParameters = new InitialParameters();
-//
-////	@Mock
-////	private WorldMap map = new WorldMap(100, 50, 0.1);
 ////
-////	@InjectMocks
+//////@RunWith(MockitoJUnitRunner.class)
+//public class EngineTest {
+////
+//	InitialParameters initialParameters = new InitialParameters();
+////
+//////	@Mock
+//////	private WorldMap map = new WorldMap(100, 50, 0.1);
+//////
+//////	@InjectMocks
 //	private Engine engine;
-//
+////
 //	@Test
 //	public void addFirstAnimalsTest() {
 //
@@ -28,7 +28,7 @@
 //		initialParameters.setNumberOfFirstAnimals(5);
 //		initialParameters.setStartEnergy(100);
 //
-//		engine = new Engine();
+//		engine = new Engine(initialParameters);
 //
 //		assertEquals(5, engine.getAnimals().size());
 //	}
@@ -42,11 +42,11 @@
 //		initialParameters.setNumberOfFirstAnimals(5);
 //		initialParameters.setStartEnergy(-1);
 //
-//		engine = new Engine();
+//		engine = new Engine(initialParameters);
 //
 //		assertEquals(5, engine.getAnimals().size());
 //
-//	//	engine.removeDeadAnimals();
+//		engine.removeDeadAnimals();
 //
 //		assertEquals(0, engine.getAnimals().size());
 //
@@ -62,10 +62,10 @@
 //		initialParameters.setStartEnergy(100);
 //		initialParameters.setMoveEnergy(10);
 //		Vector2d position;
-//		engine = new Engine();
+//		engine = new Engine(initialParameters);
 //
 //		position = engine.getAnimals().get(0).getPosition();
-//	//	engine.moveAnimals();
+//		engine.moveAnimals();
 //
 //		assertEquals(90, engine.getAnimals().get(0).getEnergy());
 //		assertNotEquals(position, engine.getAnimals().get(0).getPosition());
@@ -120,16 +120,16 @@
 //		initialParameters.setStartEnergy(100);
 //		List<Plant> plants;
 //
-//		engine = new Engine();
+//        engine = new Engine(initialParameters);
 //
-//		//engine.addNewPlants();
+//		engine.addNewPlants();
 //		plants = engine.getPlants();
 //
 //		assertEquals(2, plants.size());
 //	}
 //
-//	@Test
-//	void nextDayTest() {
-//
-//	}
+////	@Test
+////	void nextDayTest() {
+////
+////	}
 //}
