@@ -2,8 +2,7 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import animation.Controller;
+import animation.MapController;
 import enums.MapDirection;
 import javafx.application.Platform;
 import map.Jungle;
@@ -15,7 +14,7 @@ import objects.Plant;
 public class Engine implements  Runnable, Jungle {
 
 	private boolean running;
-	private Controller controller;
+	private MapController controller;
 	private WorldMap map;
 	private InitialParameters initialParameters;
 	private List<Plant> plants;
@@ -29,6 +28,7 @@ public class Engine implements  Runnable, Jungle {
 		this.animals = new ArrayList<>();
 		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
 		this.statistics = new Statistics();
+		statistics.refreshStatistics(animals.size(), plants.size(), animals);
 		this.running = false;
 	}
 
@@ -147,7 +147,7 @@ public class Engine implements  Runnable, Jungle {
 		eating();
 		reproduceAnimals();
 		addNewPlants();
-		//	statistics.refreshStatistics(animals.size(), plants.size(), animals);
+		statistics.refreshStatistics(animals.size(), plants.size(), animals);
 		controller.nextDay(animals, plants, statistics);
 	}
 
@@ -179,7 +179,7 @@ public class Engine implements  Runnable, Jungle {
 		}
 	}
 
-	public void setController(Controller controller) {
+	public void setController(MapController controller) {
 		this.controller = controller;
 	}
 

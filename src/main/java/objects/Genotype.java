@@ -135,7 +135,8 @@ public class Genotype {
 
 	@Override
 	public String toString() {
-		return "Genotype: " + genotype;
+		String gen = String.valueOf(genotype).replaceAll("\\s+", "");
+		return gen.replaceAll(",", "");
 	}
 
 	@Override

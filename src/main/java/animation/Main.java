@@ -3,8 +3,10 @@ package animation;
 import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import simulation.Engine;
 import simulation.InitialParameters;
@@ -41,24 +43,19 @@ public class Main extends Application {
     @Override
     public void start (Stage theStage) throws Exception
     {
-        Engine engine1 = new Engine(initialParameters);
-//        Engine engine2 = new Engine(initialParameters);
-        Controller controller1 = new Controller(engine1);
-//        Controller controller2 = new Controller(engine2);
-        engine1.setController(controller1);
-//        engine2.setController(controller2);
-        Thread simulation1 = new Thread(engine1);
-//        Thread simulation2 = new Thread(engine2);
-        FXMLLoader fxml = new FXMLLoader(getClass().getResource("/file.fxml"));
-        fxml.setController(controller1);
+        MapController controller1 = new MapController(initialParameters);
+        MapController controller2 = new MapController(initialParameters);
 
-        AnchorPane pane = fxml.load();
-    	Scene scene = new Scene(pane);
+        HBox hbox = new HBox();
+        FXMLLoader fxml1 = new FXMLLoader(getClass().getResource("/map.fxml"));
+        FXMLLoader fxml2 = new FXMLLoader(getClass().getResource("/map.fxml"));
+        fxml1.setController(controller1);
+        fxml2.setController(controller2);
+        hbox.getChildren().addAll(fxml1.load(), (Parent)fxml2.load());
+
+        Scene scene = new Scene(hbox);
    		theStage.setScene(scene);
         theStage.setTitle("Evolution!");
    		theStage.show();
-
-		simulation1.start();
-//		simulation2.start();
     }
 }

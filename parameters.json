@@ -3,7 +3,7 @@
   "height": 23,
   "startEnergy": 200,
   "moveEnergy": 5,
-  "plantEnergy": 30,
-  "numberOfFirstAnimals": 100,
+  "plantEnergy": 50,
+  "numberOfFirstAnimals": 50,
   "jungleRatio": 0.49
 }

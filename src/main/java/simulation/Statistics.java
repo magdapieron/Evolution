@@ -62,10 +62,10 @@ public class Statistics {
 	                maxEntry = entry;
 	            }
 	        }
-	        if(maxEntry != null)
-			{
+	        if(maxEntry != null && maxEntry.getValue() > 1)
 	        	this.dominantGenotype = maxEntry.getKey();
-			}
+	        else
+	        	this.dominantGenotype = null;
 	}
 	
 	private void setAvgEnergyLevelOfLivingAnimals(List<Animal> animals) 
@@ -74,10 +74,10 @@ public class Statistics {
 		
 		for(Animal animal : animals)
 			sumOfEnergy += animal.getEnergy();
-		
-		this.avgEnergyLevelOfLivingAnimals = (double)sumOfEnergy/animals.size();
+
+		this.avgEnergyLevelOfLivingAnimals = (double)Math.round((double)sumOfEnergy/animals.size()*100)/100;
 	}
-	
+
 	private double setAvgLifeExpectancyOfAnimals(List<Animal> animals) 
 	{
 		int lifeExpectancy = 0;
@@ -98,13 +98,11 @@ public class Statistics {
 		int sumOfChildren = 0;
 		
 		for(Animal animal : animals)
-		{
 			sumOfChildren += animal.getChildren();
-		}
-		
-		this.avgNumberOfChildren = (double)sumOfChildren/animals.size();
+
+		this.avgNumberOfChildren = (double)Math.round((double)sumOfChildren/animals.size()*100)/100;
 	}
-	
+
 	private void nextEpoch()
 	{
 		this.epoch++;
