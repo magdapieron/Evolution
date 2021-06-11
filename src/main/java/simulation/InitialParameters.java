@@ -9,7 +9,7 @@ public class InitialParameters {
 	 private int plantEnergy;
 	 private int numberOfFirstAnimals; 
 	 private double jungleRatio;
-	  
+
 	public void checkParameters() 
 	{
 		if(width > 23 || height > 23)
@@ -51,33 +51,5 @@ public class InitialParameters {
 
 	public double getJungleRatio() {
 		return jungleRatio;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	public void setStartEnergy(int startEnergy) {
-		this.startEnergy = startEnergy;
-	}
-
-	public void setMoveEnergy(int moveEnergy) {
-		this.moveEnergy = moveEnergy;
-	}
-
-	public void setPlantEnergy(int plantEnergy) {
-		this.plantEnergy = plantEnergy;
-	}
-
-	public void setNumberOfFirstAnimals(int numberOfFirstAnimals) {
-		this.numberOfFirstAnimals = numberOfFirstAnimals;
-	}
-
-	public void setJungleRatio(double jungleRatio) {
-		this.jungleRatio = jungleRatio;
 	}
 }

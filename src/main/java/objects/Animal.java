@@ -13,18 +13,20 @@ import map.WorldMap;
 public class Animal implements Comparable<Animal>, IMapElement {
 
 	private static int currentId;
-	private int id;
+	private final int id;
 	
 	private Genotype genotype;
 	private Vector2d position;
 	private int energy;
-	private WorldMap map;
+	private final WorldMap map;
 	private MapDirection orientation;
-	private List<IPositionChangeObserver> positionObserver = new LinkedList<>();
-	private List<IEnergyChangeObserver> energyObserver = new LinkedList<>();
+	private final List<IPositionChangeObserver> positionObserver = new LinkedList<>();
+	private final List<IEnergyChangeObserver> energyObserver = new LinkedList<>();
 	private int children;
-	private int birthEpoch;
+	private final int birthEpoch;
 	private int deathEpoch;
+	private boolean isTracked;
+	private boolean isTrackedAncestor;
 	
 	// initial animal with random genes
 	public Animal(Vector2d initialPosition, MapDirection initialOrientation, int energy, WorldMap map, int birthEpoch )
@@ -37,8 +39,10 @@ public class Animal implements Comparable<Animal>, IMapElement {
 		this.map = map;
 		this.children = 0;
 		this.birthEpoch = birthEpoch;
-		this.deathEpoch = -1;
+		this.deathEpoch = 0;
 		this.genotype = new Genotype();
+		this.isTracked = false;
+		this.isTrackedAncestor = false;
 	}
 
 	// born animal
@@ -70,27 +74,21 @@ public class Animal implements Comparable<Animal>, IMapElement {
 	private Vector2d wrapEdgesOfMap(int x, int y)
 	{
 		if(x > map.getWidth())
-		{
 			x = x - map.getWidth();
-		}
+
 		else if(x == -1)
-		{
 			x = x + map.getWidth();
-		}
-		
+
 		if(y > map.getHeight())
-		{
 			y = y - map.getHeight();
-		}
+
 		else if(y == -1)
-		{
 			y = y + map.getHeight();
-		}
 		
 		return new Vector2d(x,y);
 	}
 	
-	public Animal reproduction(Animal other)
+	public Animal reproduction(Animal other, int birthEpoch)
 	{		
 		Vector2d childPosition = map.randomPositionForChild(this.position);
 		MapDirection childOrientation = MapDirection.randomOrientation();
@@ -105,7 +103,7 @@ public class Animal implements Comparable<Animal>, IMapElement {
 		other.energyChanged();
 		other.newChild();
 	
-		return new Animal(childGenotype, childPosition, childOrientation, childEnergy, this.map, this.birthEpoch);		
+		return new Animal(childGenotype, childPosition, childOrientation, childEnergy, this.map, birthEpoch);
 	}
 	
 	public void eatPlant(int plantEnergy)
@@ -155,16 +153,17 @@ public class Animal implements Comparable<Animal>, IMapElement {
 		 }
 	 }
 
+	 public boolean isDead()
+	 {
+	 	return energy <= 0;
+	 }
+
 	public Vector2d getPosition() {
 		return position;
 	}
 
 	public int getEnergy() {
 		return energy;
-	}
-	
-	public MapDirection getOrientation() {
-		return orientation;
 	}
 
 	public Genotype getGenotype() {
@@ -180,11 +179,39 @@ public class Animal implements Comparable<Animal>, IMapElement {
 		return deathEpoch-birthEpoch;
 	}
 
+	public int getBirthEpoch() {
+		return birthEpoch;
+	}
+
+	public int getDeathEpoch() {
+		return deathEpoch;
+	}
+
+	public void setDeathEpoch(int deathEpoch) {
+		this.deathEpoch = deathEpoch;
+	}
+
 	public int getId()
 	{
 		return id;
 	}
-	
+
+	public boolean isTracked() {
+		return isTracked;
+	}
+
+	public void setTracked(boolean isTracked) {
+		this.isTracked = isTracked;
+	}
+
+	public boolean isTrackedAncestor() {
+		return isTrackedAncestor;
+	}
+
+	public void setTrackedAncestor(boolean isTrackedAncestor) {
+		this.isTrackedAncestor = isTrackedAncestor;
+	}
+
 	@Override
 	public String toString() {
 		return orientation.toString();

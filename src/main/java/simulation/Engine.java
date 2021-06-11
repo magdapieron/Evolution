@@ -10,26 +10,29 @@ import map.Vector2d;
 import map.WorldMap;
 import objects.Animal;
 import objects.Plant;
+import objects.TrackedAnimal;
 
 public class Engine implements  Runnable, Jungle {
 
-	private boolean running;
+	private final InitialParameters initialParameters;
+	private final WorldMap map;
+	private final List<Plant> plants;
+	private final List<Animal> animals;
+	private final Statistics statistics;
+	private TrackedAnimal trackedAnimal;
 	private MapController controller;
-	private WorldMap map;
-	private InitialParameters initialParameters;
-	private List<Plant> plants;
-	private List<Animal> animals;
-	private Statistics statistics;
+	private boolean running;
 
 	public Engine(InitialParameters initialParameters) {
 		this.initialParameters = initialParameters;
-		this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight(), initialParameters.getJungleRatio());
+		this.map = new WorldMap(initialParameters.getWidth(), initialParameters.getHeight());
 		this.plants = new ArrayList<>();
 		this.animals = new ArrayList<>();
-		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
 		this.statistics = new Statistics();
-		statistics.refreshStatistics(animals.size(), plants.size(), animals);
+		this.trackedAnimal = new TrackedAnimal();
 		this.running = false;
+		addFirstAnimals(initialParameters.getNumberOfFirstAnimals());
+		statistics.refreshStatistics(animals.size(), plants.size(), animals);
 	}
 
 	private void addFirstAnimals(int numberOfFirstAnimals) {
@@ -50,7 +53,8 @@ public class Engine implements  Runnable, Jungle {
 	private void removeDeadAnimals() {
 		List<Animal> animalsToRemove = new ArrayList<>();
 		for (Animal animal : animals) {
-			if (animal.getEnergy() <= 0) {
+			if (animal.isDead()) {
+				animal.setDeathEpoch(statistics.getEpoch());
 				this.map.removeDeadAnimal(animal.getPosition(), animal);
 				animalsToRemove.add(animal);
 			}
@@ -88,9 +92,21 @@ public class Engine implements  Runnable, Jungle {
 		List<List<Animal>> listAnimalsToReproduce = map.getPairsAnimalsToReproduce(initialParameters.getStartEnergy());
 		if (!listAnimalsToReproduce.isEmpty()) {
 			for (List<Animal> parents : listAnimalsToReproduce) {
-				Animal child = parents.get(0).reproduction(parents.get(1));
+				Animal child = parents.get(0).reproduction(parents.get(1), statistics.getEpoch());
 				animals.add(child);
 				this.map.placeAnimal(child);
+
+				if(parents.get(0).isTracked() || parents.get(1).isTracked())
+				{
+					trackedAnimal.newChildren();
+					child.setTrackedAncestor(true);
+				}
+
+				if(parents.get(0).isTrackedAncestor() || parents.get(1).isTrackedAncestor())
+				{
+					trackedAnimal.newAncestor();
+					child.setTrackedAncestor(true);
+				}
 			}
 		}
 	}
@@ -197,5 +213,18 @@ public class Engine implements  Runnable, Jungle {
 
 	public Statistics getStatistics() {
 		return statistics;
+	}
+
+	public TrackedAnimal getTrackedAnimal() {
+		return trackedAnimal;
+	}
+
+	public void setTrackedAnimal(Animal animal) {
+		this.trackedAnimal.newTrackedAnimal(animal);
+	}
+
+	public void setNoTrackedAnimal()
+	{
+		this.trackedAnimal = new TrackedAnimal();
 	}
 }

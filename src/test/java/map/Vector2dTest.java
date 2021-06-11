@@ -18,8 +18,8 @@ public class Vector2dTest {
 	public void testEqulas()
 	{
 		assertEquals(new Vector2d(2,4), vec1);
-		assertFalse(vec1.equals(vec2));
-		assertTrue(vec2.equals(vec2));
+		assertNotEquals(vec1, vec2);
+		assertEquals(vec2, vec2);
 	}
 	
 	@Test

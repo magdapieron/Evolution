@@ -9,7 +9,7 @@ import java.util.Random;
 public class Genotype {
 
 	private final List<Integer> genotype;
-	private Random random = new Random();
+	private final Random random = new Random();
 	
 	public Genotype()
 	{
@@ -37,7 +37,7 @@ public class Genotype {
 	private void completeGenotype(List<Integer> genotype)
 	{			
 		List<Boolean> missing = findMissing();
-		int missingGene = 0;
+		int missingGene;
 		
 		while(missing.contains(false))
 		{
@@ -80,20 +80,16 @@ public class Genotype {
 		
 		for(int i=0; i<3; i++)
 		{
-			Genotype parentGenotype = null;
+			Genotype parentGenotype;
 			if(parents[i])
 				 parentGenotype = this;
 			else
 				parentGenotype = other;
-			
-			switch(i)
-			{
-			case 0: childGenotype.addAll(donateGenes(0, index1, parentGenotype));
-			break;
-			case 1: childGenotype.addAll(donateGenes(index1+1, index2, parentGenotype));
-			break;
-			case 2: childGenotype.addAll(donateGenes(index2+1, 31, parentGenotype));
-			break;
+
+			switch (i) {
+				case 0 -> childGenotype.addAll(donateGenes(0, index1, parentGenotype));
+				case 1 -> childGenotype.addAll(donateGenes(index1 + 1, index2, parentGenotype));
+				case 2 -> childGenotype.addAll(donateGenes(index2 + 1, 31, parentGenotype));
 			}
 		}				
 		Collections.sort(childGenotype);
@@ -125,8 +121,7 @@ public class Genotype {
 	
 	public int drawGene()
 	{
-		int gene = this.genotype.get(random.nextInt(32));
-		return gene;
+		return this.genotype.get(random.nextInt(32));
 	}
 	
 	public List<Integer> getGenotype() {
@@ -160,9 +155,7 @@ public class Genotype {
 			if (other.genotype != null) {
 				return false;
 			}
-		} else if (!genotype.equals(other.genotype)) {
-			return false;
-		}
+		} else return genotype.equals(other.genotype);
 		return true;
 	}
 	

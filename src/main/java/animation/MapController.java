@@ -11,10 +11,14 @@ import javafx.scene.paint.Color;
 import map.Jungle;
 import map.Vector2d;
 import objects.Animal;
+import objects.Genotype;
 import objects.Plant;
 import simulation.Engine;
 import simulation.InitialParameters;
 import simulation.Statistics;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +29,17 @@ public class MapController implements Jungle {
     private final Image healthyPig = new Image("/HealthyPig.png", 20, 20, true, true);
     private final Image sickPig = new Image("/SickPig.png", 20, 20, true, true);
     private final Image almostDeadPig = new Image("/AlmostDeadPig.png", 20, 20, true, true);
+    private final Image trackedPig = new Image("/TrackedPig.png", 20, 20, true, true);
+    private final Image pigWithDominantGenotype = new Image("/pigWithDominantGenotype.png", 20, 20, true, true);
     private final Image grass= new Image("/Grass.png", 20, 20, true, true);
     private final int height;
     private final int width;
     private final Vector2d jungleLL;
     private final Vector2d jungleUR;
     private GraphicsContext gc;
+    GraphicsContext back;
     private boolean canMark = true;
+    private boolean isTracked = false;
 
     public  MapController (InitialParameters initialParameters)
     {
@@ -39,15 +47,12 @@ public class MapController implements Jungle {
         engine.setController(this);
         this.height = engine.getInitialParameters().getHeight()*20;
         this.width = engine.getInitialParameters().getWidth()*20;
-        Vector2d mapCenter = new Vector2d((int) Math.round(width / 2), (int) Math.round(height / 2));
+        Vector2d mapCenter = new Vector2d(Math.round(width / 2), Math.round(height / 2));
         this.jungleLL = jungleLowerLeftCorner(width, height, engine.getInitialParameters().getJungleRatio(), mapCenter);
         this.jungleUR = jungleUpperRightCorner(width, height, engine.getInitialParameters().getJungleRatio(), mapCenter);
         Thread simulation1 = new Thread(engine);
         simulation1.start();
     }
-
-//    @FXML
-//    Button markDominant;
 
     @FXML
     Canvas animation;
@@ -62,53 +67,91 @@ public class MapController implements Jungle {
     TextArea animalStat;
 
     @FXML
-    public void startStop(ActionEvent event) {
+    public void startStop() {
         engine.stopStart();
         this.canMark = !canMark;
     }
 
-
     @FXML
-    public void markAnimal(MouseEvent event)        // to repair
-    {
+    public void markAnimal(MouseEvent event)
+    {   // can only mark one animal when animation is stopped
         if(canMark)
-        {   // if on clicked position is more than one animal, then get it with the biggest energy
-            List<Animal> animalsAtPosition = new ArrayList<>();
-//            Image image = event.
-            double x = event.getX();
-            double y = event.getY();
-            System.out.println("1: " + x + " " + y + "\n");
+        {
+            Vector2d position = new Vector2d((int)event.getX()/ 20, (int)event.getY()/ 20);
+            if (!isTracked)
+            {   // if on clicked position is more than one animal, then get it with the biggest energy
+                List<Animal> animalsAtPosition = new ArrayList<>();
 
-            Vector2d position = new Vector2d((int)x/20, (int)y/20);
-            System.out.println("2: " + position + "\n");
-            Animal clikcedAnimal = null;
-            for(Animal animal : engine.getAnimals())
-            {
-                if(animal.getPosition().equals(position))
-                    animalsAtPosition.add(animal);
+                for (Animal animal : engine.getAnimals())
+                {
+                    if (animal.getPosition().equals(position))
+                        animalsAtPosition.add(animal);
+                }
+                if (animalsAtPosition.size() != 0)
+                {
+                    animalsAtPosition.sort(Animal::compareTo);
+                    engine.setTrackedAnimal(animalsAtPosition.get(0));
+                    markAnimal(animalsAtPosition.get(0));
+                    this.isTracked = true;
+                }
             }
-            if(animalsAtPosition.size() != 0)
+            else if (this.isTracked && engine.getTrackedAnimal().getAnimal().getPosition().equals(position))
             {
-                animalsAtPosition.sort(Animal::compareTo);
-                clikcedAnimal = animalsAtPosition.get(0);
-                System.out.println(clikcedAnimal + " " + clikcedAnimal.getPosition() + " " + x + " " + y);
+                uncheckTracking();
             }
-            System.out.println(" po: " + x + " " + y);
         }
     }
 
     @FXML
-    public void markDominant(ActionEvent event)
+    public void markDominant()
     {
         if(canMark)
         {
-
+            Genotype genotype = engine.getStatistics().getDominantGenotype();
+            if(genotype != null)
+            {
+                for(Animal animal : engine.getAnimals())
+                {
+                    if(animal.getGenotype().equals(genotype))
+                        gc.drawImage(pigWithDominantGenotype, animal.getPosition().x*20, animal.getPosition().y*20);
+                }
+            }
         }
+    }
+
+    @FXML
+    private void saveStat()
+    {
+        try
+        {
+            FileWriter stat = new FileWriter("src/main/resources/" + engine.getStatistics().getEpoch() + "Stat.txt");
+            PrintWriter line = new PrintWriter(stat);
+            for(String statistics : engine.getStatistics().getAllStatisitc())
+            {
+                line.println(statistics);
+            }
+            line.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    private void uncheckTracking()
+    {
+        engine.setNoTrackedAnimal();
+        this.isTracked = false;
+        for(Animal animal : engine.getAnimals())
+        {
+            animal.setTracked(false);
+            animal.setTrackedAncestor(false);
+        }
+        updateAnimalsOnMap(engine.getAnimals());
     }
 
     public void createMap()
     {
-        GraphicsContext back = background.getGraphicsContext2D();
         back.setFill(Color.YELLOWGREEN);
         back.fillRect(0, 0, width,height);
         back.setFill(Color.GREEN);
@@ -123,6 +166,7 @@ public class MapController implements Jungle {
 
     public void initialize() {
         this.gc = animation.getGraphicsContext2D();
+        this.back = background.getGraphicsContext2D();
         animation.setHeight(height);
         animation.setWidth(width);
         background.setHeight(height);
@@ -135,17 +179,30 @@ public class MapController implements Jungle {
     {
         for(Animal animal : animals)
         {
-            int energy = animal.getEnergy();
-            Vector2d position = animal.getPosition();
-            if(energy > 75)
-                gc.drawImage(veryHealthyPig, position.x*20, position.y*20);
-            else if(energy > 50 && energy <= 75)
-                gc.drawImage(healthyPig, position.x*20, position.y*20);
-            else if(energy > 25 && energy <= 50)
-                gc.drawImage(sickPig, position.x*20, position.y*20);
-            else if(energy > 0 && energy <= 25)
-                gc.drawImage(almostDeadPig, position.x*20, position.y*20);
+            if(!animal.isTracked())
+                drawAnimal(animal);
+            else
+                markAnimal(animal);
         }
+    }
+
+    private void markAnimal(Animal animal)
+    {
+        gc.drawImage(trackedPig, animal.getPosition().x*20, animal.getPosition().y*20);
+    }
+
+    private void drawAnimal(Animal animal)
+    {
+        Vector2d position = animal.getPosition();
+        int energy = animal.getEnergy();
+        if(energy > 75)
+            gc.drawImage(veryHealthyPig, position.x*20, position.y*20);
+        else if(energy > 50 && energy <= 75)
+            gc.drawImage(healthyPig, position.x*20, position.y*20);
+        else if(energy > 25 && energy <= 50)
+            gc.drawImage(sickPig, position.x*20, position.y*20);
+        else if(energy > 0 && energy <= 25)
+            gc.drawImage(almostDeadPig, position.x*20, position.y*20);
     }
 
     private void updatePlantsOnMap(List<Plant> plants)
@@ -155,9 +212,10 @@ public class MapController implements Jungle {
         }
     }
 
-    private void updateStat(Statistics statistics)
+    private void updateMapStat(Statistics statistics)
     {
         mapStat.clear();
+        mapStat.appendText("Epoch: " + statistics.getEpoch() + "\n");
         mapStat.appendText("Number of animals: " + statistics.getNumberOfAllAnimals() + "\n");
         mapStat.appendText("Number of plants: " + statistics.getNumberOfAllPlants() + "\n");
         mapStat.appendText("Dominant genotype: " + "\n" + statistics.getDominantGenotype() + "\n");
@@ -166,27 +224,38 @@ public class MapController implements Jungle {
         mapStat.appendText("Avg number of children: " + statistics.getAvgNumberOfChildren() + "\n");
     }
 
+    private void updateTrackedAnimalStat()
+    {
+        Animal animal = engine.getTrackedAnimal().getAnimal();
+        animalStat.clear();
+        animalStat.appendText("Position: " + animal.getPosition() + "\n");
+        animalStat.appendText("Genotype: " + animal.getGenotype() + "\n");
+        animalStat.appendText("Birth epoch: " + animal.getBirthEpoch() + "\n");
+        animalStat.appendText("Energy: " + animal.getEnergy() + "\n");
+        if(animal.isDead())
+            animalStat.appendText("Death epoch : " + animal.getDeathEpoch() + "\n");
+        animalStat.appendText("New children: " + engine.getTrackedAnimal().getNumberOfNewChildren() + "\n");
+        animalStat.appendText("New ancestors: " + engine.getTrackedAnimal().getNumberOfNewAncestor() + "\n");
+    }
+
     public void nextDay(List<Animal> animals, List<Plant> plants, Statistics stat)
     {
         gc.clearRect(0,0,width, height);
         updateAnimalsOnMap(animals);
         updatePlantsOnMap(plants);
-        updateStat(stat);
+        updateMapStat(stat);
+        if(engine.getTrackedAnimal().getAnimal() != null)
+        {
+            // if tracked animal is dead, can select a new one, but until then display the statistics of the deceased
+            if(this.isTracked && engine.getTrackedAnimal().getAnimal().isDead())
+            {
+                updateTrackedAnimalStat();
+                this.isTracked = false;
+            }
+            else
+                updateTrackedAnimalStat();
+        }
     }
-
-////	private void saveStat(Button button)
-////	{
-////		try
-////		{
-////			FileWriter stat = new FileWriter("Map1stat.txt");
-////			stat.write("Map2");
-////			stat.close();
-////		}
-////		catch (IOException ex)
-////		{
-////			ex.printStackTrace();
-////		}
-////	}
 }
 
 

@@ -5,7 +5,7 @@ import map.Vector2d;
 
 public class Plant implements IMapElement{
 
-	private Vector2d position;
+	private final Vector2d position;
 	
 	public Plant(Vector2d position)
 	{
@@ -39,12 +39,7 @@ public class Plant implements IMapElement{
 		}
 		Plant other = (Plant) obj;
 		if (position == null) {
-			if (other.position != null) {
-				return false;
-			}
-		} else if (!position.equals(other.position)) {
-			return false;
-		}
-		return true;
+			return other.position == null;
+		} else return position.equals(other.position);
 	}
 }

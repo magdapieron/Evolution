@@ -17,18 +17,16 @@ public enum MapDirection {
 	
 	public String toString()
 	{
-		switch(this)
-		{
-			case NORTH: return "N";
-			case NORTH_EAST: return "NE";
-			case EAST: return "E";
-			case SOUTH_EAST: return "SE";
-			case SOUTH: return "S";
-			case SOUTH_WEST: return "SW";
-			case WEST: return "W";	
-			case NORTH_WEST: return "NW";
-			default: return "No such direction";
-		}			
+		return switch (this) {
+			case NORTH -> "N";
+			case NORTH_EAST -> "NE";
+			case EAST -> "E";
+			case SOUTH_EAST -> "SE";
+			case SOUTH -> "S";
+			case SOUTH_WEST -> "SW";
+			case WEST -> "W";
+			case NORTH_WEST -> "NW";
+		};
 	}
 	
 	public MapDirection changeOrientation(int rotation)
@@ -51,18 +49,16 @@ public enum MapDirection {
 	
 	public Vector2d toUnitVector()
 	{
-		switch(this)
-		{
-			case NORTH: return new Vector2d(0,1);
-			case SOUTH: return new Vector2d(0,-1);
-			case WEST: return new Vector2d(-1,0);
-			case EAST: return new Vector2d(1,0);		
-			case NORTH_EAST: return new Vector2d(1,1);
-			case SOUTH_EAST: return new Vector2d(1,-1);
-			case SOUTH_WEST: return new Vector2d(-1,-1);
-			case NORTH_WEST: return new Vector2d(-1,1);
-			default: return null;
-		}		
+		return switch (this) {
+			case NORTH -> new Vector2d(0, 1);
+			case SOUTH -> new Vector2d(0, -1);
+			case WEST -> new Vector2d(-1, 0);
+			case EAST -> new Vector2d(1, 0);
+			case NORTH_EAST -> new Vector2d(1, 1);
+			case SOUTH_EAST -> new Vector2d(1, -1);
+			case SOUTH_WEST -> new Vector2d(-1, -1);
+			case NORTH_WEST -> new Vector2d(-1, 1);
+		};
 	}
 	
 	// draws initial orientation for the first animals or children 

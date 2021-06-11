@@ -18,7 +18,7 @@ public class AnimalTest {
 	@Before
 	public void setUp()
 	{
-		map = new WorldMap(5,5, 0.3);
+		map = new WorldMap(5,5);
 		orientation = MapDirection.EAST;
 		position = new Vector2d(1,2);
 	}
@@ -42,11 +42,11 @@ public class AnimalTest {
 		Animal animal1 = new Animal(position, orientation, 4, map, 0);
 		Animal animal2 = new Animal(position, orientation, 4, map, 0);
 		
-		Animal child = animal1.reproduction(animal2);
+		Animal child = animal1.reproduction(animal2, 0);
 		Vector2d childPosition = child.getPosition();
 		
 		assertTrue(childPosition.x <= 2 && childPosition.x >= 0 && childPosition.y <= 3 && childPosition.y >=1);
-		assertFalse(childPosition.equals(animal1.getPosition()));
+		assertNotEquals(childPosition, animal1.getPosition());
 		assertEquals(2, child.getEnergy());
 		assertEquals(3, animal1.getEnergy());
 		assertEquals(3, animal2.getEnergy());

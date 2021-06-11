@@ -14,28 +14,25 @@ import objects.Plant;
 
 public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver{
 	
-	private int width;
-	private int height;
-	private Map<Vector2d, Plant> plants;
-	private Map<Vector2d, TreeSet<Animal>> animals;
-	private Random random = new Random();
-	private double jungleRatio;
-	private Vector2d mapCenter;
+	private final int width;
+	private final int height;
+	private final Map<Vector2d, Plant> plants;
+	private final Map<Vector2d, TreeSet<Animal>> animals;
+	private final Random random = new Random();
+	private final Vector2d mapCenter;
 	
-	public WorldMap(int width, int height, double jungleRatio) 
+	public WorldMap(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
 		this.plants = new LinkedHashMap<>(); 
-		this.animals = new LinkedHashMap<>();			
-		this.jungleRatio = jungleRatio;
-		this.mapCenter = new Vector2d((int) Math.round(width/2), (int) Math.round(height/2));
+		this.animals = new LinkedHashMap<>();
+		this.mapCenter = new Vector2d(Math.round(width/2),Math.round(height/2));
 	}
 	
 	public Vector2d randomPosition(int maxX, int minX, int maxY, int minY)
 	{
-		Vector2d randomPosition = new Vector2d(random.nextInt(maxX-minX+1)+minX, random.nextInt(maxY-minY+1)+minY);
-		return randomPosition;
+		return new Vector2d(random.nextInt(maxX-minX+1)+minX, random.nextInt(maxY-minY+1)+minY);
 	}
 	
 	public void placeAnimal(Animal animal)
@@ -76,7 +73,7 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver{
 
 	public Vector2d randomPositionForChild(Vector2d parentPosition)
 	{
-		Vector2d childPosition = null;
+		Vector2d childPosition;
 		List<Integer> freePositions = new ArrayList<>();
 		
 		
@@ -87,18 +84,18 @@ public class WorldMap implements IPositionChangeObserver, IEnergyChangeObserver{
 		}
 		
 		// if there are free positions, draw of one of them
+		int direction;
 		if(!freePositions.isEmpty())
 		{
-			int direction = freePositions.get(random.nextInt(freePositions.size()));
-			childPosition = parentPosition.add(MapDirection.values()[direction].toUnitVector());
+			direction = freePositions.get(random.nextInt(freePositions.size()));
 		}
 		
 		// if there is not free position, draw of occupied one
 		else
 		{
-			int direction = random.nextInt(8);
-			childPosition = parentPosition.add(MapDirection.values()[direction].toUnitVector());
+			direction = random.nextInt(8);
 		}
+		childPosition = parentPosition.add(MapDirection.values()[direction].toUnitVector());
 		return childPosition;
 	}
 	

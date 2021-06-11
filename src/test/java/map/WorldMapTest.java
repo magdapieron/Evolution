@@ -4,13 +4,10 @@ import static org.junit.Assert.*;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import enums.MapDirection;
 import objects.Animal;
 import objects.Plant;
 
-@RunWith(MockitoJUnitRunner.class)
 public class WorldMapTest {
 	
 	private WorldMap map;
@@ -18,20 +15,8 @@ public class WorldMapTest {
 	@Before
 	public void setUp()
 	{
-		map = new WorldMap(100, 50, 0.1);
+		map = new WorldMap(100, 50);
 	}
-	
-//	@Test
-//	public void jungleCornersTest()
-//	{
-//		WorldMap map2 = new WorldMap(99, 40, 0.1);
-//
-//		assertEquals(new Vector2d(45,23), map.jungleLowerLeftCorner());
-//		assertEquals(new Vector2d(55,27), map.jungleUpperRightCorner());
-//
-//		assertEquals(new Vector2d(45,18), map2.jungleLowerLeftCorner());
-//		assertEquals(new Vector2d(53,22), map2.jungleUpperRightCorner());
-//	}
 
 	@Test
 	public void randomPositionTest()
@@ -96,7 +81,7 @@ public class WorldMapTest {
 		map.placeAnimal(parent);
 		Vector2d childPosition = map.randomPositionForChild(parentPosition);
 		assertTrue(childPosition.x <= 2 && childPosition.x >= 0 && childPosition.y <= 2 && childPosition.y >= 0);
-		assertFalse(childPosition.equals(parentPosition));
+		assertNotEquals(childPosition, parentPosition);
 
 		// one position around parent is not occupied			
 		map.placeAnimal(new Animal(new Vector2d(1,2), MapDirection.NORTH, 50, map, 0));
@@ -108,8 +93,8 @@ public class WorldMapTest {
 		map.placeAnimal(new Animal(new Vector2d(2,0), MapDirection.NORTH, 50, map, 0));
 
 		childPosition = map.randomPositionForChild(parentPosition);
-		assertTrue(childPosition.x == 0 && childPosition.y == 0);	
-		assertFalse(childPosition.equals(parentPosition));	
+		assertTrue(childPosition.x == 0 && childPosition.y == 0);
+		assertNotEquals(childPosition, parentPosition);
 	}
 	
 	@Test
@@ -117,22 +102,22 @@ public class WorldMapTest {
 	{
 		Vector2d position = new Vector2d(1,1);
 		
-		List<Animal> listAnimalsToFeed = map.getAnimalsToFeed(position);
+		List<Animal> listAnimalsToFeed;
 		
 		map.placeAnimal(new Animal(position, MapDirection.EAST, 50, map, 0));
 		map.placeAnimal(new Animal(position, MapDirection.NORTH, 50, map, 0));
 		map.placeAnimal(new Animal(position, MapDirection.NORTH_WEST, 50, map, 0));
 		
 		listAnimalsToFeed = map.getAnimalsToFeed(position);
-		
-		assertTrue(listAnimalsToFeed.size() == 3);
+
+		assertEquals(3, listAnimalsToFeed.size());
 	}
 	
 	@Test
 	public void getPairsAnimalsToReproduceTest()
 	{
 		Vector2d position = new Vector2d(1,1);		
-		List<List<Animal>> listPairsAnimalsToReproduce = map.getPairsAnimalsToReproduce(40);
+		List<List<Animal>> listPairsAnimalsToReproduce;
 		
 		Animal animal1 = new Animal(position, MapDirection.EAST, 50, map, 0);
 		Animal animal2 = new Animal(position, MapDirection.NORTH, 28, map, 0);
@@ -142,8 +127,8 @@ public class WorldMapTest {
 		
 		listPairsAnimalsToReproduce = map.getPairsAnimalsToReproduce(40);
 		List<Animal> pair = listPairsAnimalsToReproduce.get(0);
-		
-		assertTrue(listPairsAnimalsToReproduce.size() == 1);
+
+		assertEquals(1, listPairsAnimalsToReproduce.size());
 		assertSame(animal1,pair.get(0));
 		assertSame(animal2,pair.get(1));
 		
@@ -174,7 +159,8 @@ public class WorldMapTest {
 		map.setPlant(plant);
 		assertTrue(map.isOccupied(position));
 	}
-	
+
+	@Test
 	public void RemovePlantTest()
 	{
 		Vector2d position = new Vector2d(1,1);

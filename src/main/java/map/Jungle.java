@@ -12,7 +12,7 @@ public interface Jungle {
         return (int) Math.floor(height*jungleRatio);
     }
 
-    public default Vector2d jungleLowerLeftCorner(int width, int height, double jungleRatio, Vector2d mapCenter)
+    default Vector2d jungleLowerLeftCorner(int width, int height, double jungleRatio, Vector2d mapCenter)
     {
         int jungleWidth = calculateWidth(jungleRatio, width);
         int jungleHeight = calculateHeight(jungleRatio, height);
@@ -20,7 +20,7 @@ public interface Jungle {
         return new Vector2d((int)Math.floor(mapCenter.x - jungleWidth/2), (int)Math.floor(mapCenter.y - jungleHeight/2));
     }
 
-    public default Vector2d jungleUpperRightCorner(int width, int height, double jungleRatio, Vector2d mapCenter)
+    default Vector2d jungleUpperRightCorner(int width, int height, double jungleRatio, Vector2d mapCenter)
     {
         int jungleWidth = calculateWidth(jungleRatio, width);
         int jungleHeight = calculateHeight(jungleRatio, height);

@@ -1,5 +1,6 @@
 package simulation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,25 +9,50 @@ import objects.Animal;
 import objects.Genotype;
 
 public class Statistics {
-	
+
+	private static List<String> allStatisitc;
+
 	private int numberOfAllAnimals;
 	private int numberOfAllPlants;
 	private Genotype dominantGenotype;
 	private double avgEnergyLevelOfLivingAnimals;
 	private double avgLifeExpectancyOfAnimals;
 	private double avgNumberOfChildren;
-	private int epoch;
-	
+	private int epoch = 0;
+	private List<Animal> deadAnimal;
+
+	public Statistics()
+	{
+		allStatisitc = new ArrayList<>();
+		this.deadAnimal = new ArrayList<>();
+	}
+
 	public void refreshStatistics(int numberOfAnimals, int numberOfPlants, List<Animal> animals)
 	{
 		setNumberOfAllAnimals(numberOfAnimals);
 		setNumberOfAllPlants(numberOfPlants);
 		setDominantGenotype(animals);
 		setAvgEnergyLevelOfLivingAnimals(animals);
-		setAvgNumberOfChildren(animals); 
+		setAvgLifeExpectancyOfAnimals();
+		setAvgNumberOfChildren(animals);
 		nextEpoch();
+		addStatistics();
 	}
-	
+
+	private void addStatistics()
+	{
+		if(dominantGenotype == null)
+			allStatisitc.add(epoch-1, "Epoch: " + epoch + " Avg animals number: " + numberOfAllAnimals +
+				" Avg animals number: " + numberOfAllAnimals + " Dominant genotype: -" + " Avg energy level: " +
+				avgEnergyLevelOfLivingAnimals + " Avg lifespan: " + avgLifeExpectancyOfAnimals + " Avg children number: "
+				+ avgNumberOfChildren);
+		else
+			allStatisitc.add(epoch-1, "Epoch: " + epoch + " Avg animals number: " + numberOfAllAnimals +
+					" Avg animals number: " + numberOfAllAnimals + " Dominant genotype: " + dominantGenotype + " Avg energy level: " +
+					avgEnergyLevelOfLivingAnimals + " Avg lifespan: " + avgLifeExpectancyOfAnimals + " Avg children number: "
+					+ avgNumberOfChildren);
+	}
+
 	private void setNumberOfAllAnimals(int number) 
 	{
 		this.numberOfAllAnimals = number;
@@ -78,22 +104,27 @@ public class Statistics {
 		this.avgEnergyLevelOfLivingAnimals = (double)Math.round((double)sumOfEnergy/animals.size()*100)/100;
 	}
 
-	private double setAvgLifeExpectancyOfAnimals(List<Animal> animals) 
+	private void setAvgLifeExpectancyOfAnimals()
 	{
-		int lifeExpectancy = 0;
-		for(Animal animal : animals)
+		if(this.deadAnimal.size() != 0 && this.deadAnimal != null)
 		{
-			lifeExpectancy += animal.getLifeExpectancy();
+			int lifeExpectancy = 0;
+			for(Animal animal : deadAnimal)
+			{
+				lifeExpectancy += animal.getLifeExpectancy();
+			}
+			this.avgLifeExpectancyOfAnimals = (double)lifeExpectancy/deadAnimal.size();
 		}
-		return (double)lifeExpectancy/animals.size();
+		else
+			this.avgLifeExpectancyOfAnimals = 0;
 	}
 	
 	public void addDeadAnimals(List<Animal> animals)
 	{
-		this.avgLifeExpectancyOfAnimals += setAvgLifeExpectancyOfAnimals(animals);
+		this.deadAnimal = animals;
 	}
 	
-	private void setAvgNumberOfChildren(List<Animal> animals) 
+	private void setAvgNumberOfChildren(List<Animal> animals)
 	{
 		int sumOfChildren = 0;
 		
@@ -134,5 +165,9 @@ public class Statistics {
 	
 	public int getEpoch(){
 		return epoch;
+	}
+
+	public List<String> getAllStatisitc() {
+		return allStatisitc;
 	}
 }
