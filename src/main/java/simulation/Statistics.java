@@ -10,7 +10,7 @@ import objects.Genotype;
 
 public class Statistics {
 
-	private static List<String> allStatisitc;
+	private final List<String> allStatisitc;
 
 	private int numberOfAllAnimals;
 	private int numberOfAllPlants;
@@ -41,16 +41,15 @@ public class Statistics {
 
 	private void addStatistics()
 	{
+
 		if(dominantGenotype == null)
 			allStatisitc.add(epoch-1, "Epoch: " + epoch + " Avg animals number: " + numberOfAllAnimals +
-				" Avg animals number: " + numberOfAllAnimals + " Dominant genotype: -" + " Avg energy level: " +
-				avgEnergyLevelOfLivingAnimals + " Avg lifespan: " + avgLifeExpectancyOfAnimals + " Avg children number: "
-				+ avgNumberOfChildren);
+					" Dominant genotype: -" + " Avg energy level: " + avgEnergyLevelOfLivingAnimals + " Avg lifespan: " +
+					avgLifeExpectancyOfAnimals + " Avg children number: " + avgNumberOfChildren);
 		else
 			allStatisitc.add(epoch-1, "Epoch: " + epoch + " Avg animals number: " + numberOfAllAnimals +
-					" Avg animals number: " + numberOfAllAnimals + " Dominant genotype: " + dominantGenotype + " Avg energy level: " +
-					avgEnergyLevelOfLivingAnimals + " Avg lifespan: " + avgLifeExpectancyOfAnimals + " Avg children number: "
-					+ avgNumberOfChildren);
+					 " Dominant genotype: " + dominantGenotype + " Avg energy level: " + avgEnergyLevelOfLivingAnimals +
+					" Avg lifespan: " + avgLifeExpectancyOfAnimals + " Avg children number: " + avgNumberOfChildren);
 	}
 
 	private void setNumberOfAllAnimals(int number) 
