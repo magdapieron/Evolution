@@ -2,7 +2,7 @@ https://github.com/apohllo/obiektowe-lab/tree/master/proj1
 
 Welcome to the world of evolution!
 
-![](https://github.com/magdapieron/Evolution/blob/master/ReadmeFiles/Evoution.gif)
+![](https://github.com/magdapieron/Evolution/blob/master/ReadmeFiles/evolution.gif)
 
 As a user you can:
 
